@@ -201,13 +201,13 @@ const TestimonialCard = ({ review }) => (
 );
 
 const realisationsData = [
-  { imageSrc: "/abboud.jpg", title: "Docteur Nicolas Abboud", subtitle: "Chirurgie esthétique et réparatrice" },
-  { imageSrc: "/trait-union.jpg", title: "Trait d'Union Immobilier", subtitle: "Agence immobilière" },
-  { imageSrc: "/ubud.jpg", title: "Ubud Suite & Spa", subtitle: "Centre de bien-être" },
-  { imageSrc: "/tech-startup.jpg", title: "Innovate Solutions", subtitle: "Startup Technologique" },
-  { imageSrc: "/restaurant.jpg", title: "Le Gourmet Parisien", subtitle: "Restaurant Gastronomique" },
-  { imageSrc: "/architecte.jpg", title: "Studio d'Architecture Vision", subtitle: "Cabinet d'architectes" },
-  { imageSrc: "/ecommerce.jpg", title: "Luxe & Cuir", subtitle: "E-commerce de maroquinerie" },
+  { imageSrc: "/realisations/abboud.jpg", title: "Docteur Nicolas Abboud", subtitle: "Chirurgie esthétique et réparatrice" },
+  { imageSrc: "/realisations/trait-union.jpg", title: "Trait d'Union Immobilier", subtitle: "Agence immobilière" },
+  { imageSrc: "/realisations/ubud.jpg", title: "Ubud Suite & Spa", subtitle: "Centre de bien-être" },
+  { imageSrc: "/realisations/tech-startup.jpg", title: "Innovate Solutions", subtitle: "Startup Technologique" },
+  { imageSrc: "/realisations/restaurant.jpg", title: "Le Gourmet Parisien", subtitle: "Restaurant Gastronomique" },
+  { imageSrc: "/realisations/architecte.jpg", title: "Studio d'Architecture Vision", subtitle: "Cabinet d'architectes" },
+  { imageSrc: "/realisations/ecommerce.jpg", title: "Luxe & Cuir", subtitle: "E-commerce de maroquinerie" },
 ];
 
 
@@ -281,10 +281,10 @@ const RealisationsCarousel = () => {
 
 const ExpertsSection = () => {
   const column1Images = [
-    { src: "/col1-1.jpg" }, { src: "/col1-2.jpg" }, { src: "/col1-3.jpg" }
+    { src: "/experts/col1-1.jpg" }, { src: "/experts/col1-2.jpg" }, { src: "/experts/col1-3.jpg" }
   ];
   const column2Images = [
-    { src: "/col2-1.jpg" }, { src: "/col2-2.jpg" }
+    { src: "/experts/col2-1.jpg" }, { src: "/experts/col2-2.jpg" }
   ];
   return (
     <section className="bg-white py-28">
@@ -516,7 +516,7 @@ const CustomSelect = ({ label, options, placeholder }) => {
 
 const ContactForm = () => {
   return (
-    <section id="contact" className="bg-gray-50 py-28">
+    <section id="contact" className=" py-28">
       <div className="container mx-auto px-6 text-center">
         <h2 className="text-[39.22px] font-semibold leading-10 tracking-tight text-black">Demande de devis gratuit.</h2>
         <div className="mt-4 text-black/50 max-w-3xl mx-auto">
