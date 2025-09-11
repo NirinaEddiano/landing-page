@@ -1,6 +1,17 @@
 "use client";
+import { useState, useEffect,useRef } from 'react';
 import Image from "next/image";
+import useEmblaCarousel from 'embla-carousel-react';
+import { useCallback } from 'react';
 
+const InstagramIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>;
+const LinkedinIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>;
+const FacebookIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>;
+const ChevronDownIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>;
+const ChevronDownIcons = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1L4 4L7 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+const EyeIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>;
+const ChevronLeftIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M7 1L1 7L7 13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+const ChevronRightIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 13L7 7L1 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>;
 const CheckIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>;
 const StarIcon = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>;
 const ArrowUpRightIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>;
@@ -10,6 +21,12 @@ const RocketIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" heig
 const ShieldIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>;
 const ArrowRightIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>;
 const MailIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>;
+const FranceFlagIcon = () => <svg width="20" height="15" viewBox="0 0 3 2" className="rounded-sm"><path fill="#002654" d="M0 0h1v2H0z"/><path fill="#fff" d="M1 0h1v2H1z"/><path fill="#ED2939" d="M2 0h1v2H2z"/></svg>;
+const BelgiumFlagIcon = () => <svg width="20" height="15" viewBox="0 0 3 2" className="rounded-sm"><path fill="#000" d="M0 0h1v2H0z"/><path fill="#FFD90C" d="M1 0h1v2H1z"/><path fill="#F31830" d="M2 0h1v2H2z"/></svg>;
+const NetherlandsFlagIcon = () => <svg width="20" height="15" viewBox="0 0 9 6" className="rounded-sm"><path fill="#AE1C28" d="M0 0h3v1H0z"/><rect fill="#AE1C28" width="9" height="2" />
+<rect fill="#FFFFFF" y="2" width="9" height="2" />
+<rect fill="#21468B" y="4" width="9" height="2" />
+</svg>;
 
 const LogoCarousel = () => {
   const logos = [
@@ -183,23 +200,477 @@ const TestimonialCard = ({ review }) => (
   </div>
 );
 
+const realisationsData = [
+  { imageSrc: "/realisations/abboud.jpg", title: "Docteur Nicolas Abboud", subtitle: "Chirurgie esthétique et réparatrice" },
+  { imageSrc: "/realisations/trait-union.jpg", title: "Trait d'Union Immobilier", subtitle: "Agence immobilière" },
+  { imageSrc: "/realisations/ubud.jpg", title: "Ubud Suite & Spa", subtitle: "Centre de bien-être" },
+  { imageSrc: "/realisations/tech-startup.jpg", title: "Innovate Solutions", subtitle: "Startup Technologique" },
+  { imageSrc: "/realisations/restaurant.jpg", title: "Le Gourmet Parisien", subtitle: "Restaurant Gastronomique" },
+  { imageSrc: "/realisations/architecte.jpg", title: "Studio d'Architecture Vision", subtitle: "Cabinet d'architectes" },
+  { imageSrc: "/realisations/ecommerce.jpg", title: "Luxe & Cuir", subtitle: "E-commerce de maroquinerie" },
+];
+
+
+const RealisationsCarousel = () => {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+    loop: true, 
+    align: 'start',
+    slidesToScroll: 1,
+  });
+
+  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
+
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
+    emblaApi.on('select', onSelect);
+    return () => emblaApi.off('select', onSelect);
+  }, [emblaApi]);
+
+  const scrollTo = useCallback((index) => emblaApi && emblaApi.scrollTo(index), [emblaApi]);
+
+  return (
+    <div className="relative container mx-auto mt-10">
+      <div className="overflow-hidden" ref={emblaRef}>
+        <div className="flex -ml-4">
+          {realisationsData.map((item, index) => (
+            <div key={index} className="flex-none w-full md:w-1/2 lg:w-1/3 pl-4">
+              <div className="relative w-[407px] h-[474px] rounded-[18px] bg-[#fdfdfd] overflow-hidden group">
+                <Image src={item.imageSrc} alt={item.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105"/>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 p-6 text-white w-full flex justify-between items-end">
+                  <div>
+                    <h3 className="font-bold text-[16.47px] leading-6 tracking-tight">{item.title}</h3>
+                    <p className="text-[11.06px] tracking-tight opacity-80">{item.subtitle}</p>
+                  </div>
+                  <div className="bg-white/5 backdrop-blur-sm rounded-[7px] w-[45px] h-[31px] flex items-center justify-center">
+                    <EyeIcon />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      {/* Boutons de navigation */}
+      <button onClick={scrollPrev} className="absolute top-1/2 left-4 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/20 backdrop-blur-sm flex items-center justify-center hover:bg-black/40 transition-colors">
+        <ChevronLeftIcon />
+      </button>
+      <button onClick={scrollNext} className="absolute top-1/2 right-4 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/20 backdrop-blur-sm flex items-center justify-center hover:bg-black/40 transition-colors">
+        <ChevronRightIcon />
+      </button>
+      
+      {/* Pagination (points) */}
+      <div className="flex justify-center gap-2 mt-8">
+        {realisationsData.map((_, index) => (
+          <button 
+            key={index}
+            onClick={() => scrollTo(index)}
+            className={`w-[5px] h-[5px] rounded-full transition-all duration-300 ${selectedIndex === index ? 'bg-black opacity-100' : 'bg-black opacity-30'}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const ExpertsSection = () => {
+  const column1Images = [
+    { src: "/experts/col1-1.jpg" }, { src: "/experts/col1-2.jpg" }, { src: "/experts/col1-3.jpg" }
+  ];
+  const column2Images = [
+    { src: "/experts/col2-1.jpg" }, { src: "/experts/col2-2.jpg" }
+  ];
+  return (
+    <section className="bg-white py-28">
+      <div className="container mx-auto px-6">
+        <div className="bg-white rounded-3xl shadow-[0px_0px_9px_3px_rgba(0,0,0,0.1)] grid lg:grid-cols-1 lg:grid-cols-5 max-w-[1281px] mx-auto overflow-hidden">
+          {/* --- PARTIE GAUCHE : TEXTE --- */}
+          <div className="p-12 lg:p-16  flex flex-col justify-center col-span-3 ">
+            <h2 className="text-[35.3px] font-semibold leading-9 tracking-tight text-black">
+              Un réseau d’experts digitaux.
+            </h2>
+            <p className="mt-6 text-[14.06px] leading-[21px] tracking-tight text-black/50 max-w-[600px]">
+              Notre agence digitale s’appuie sur un réseau de plus de 1000 professionnels expérimentés : développeurs web, ingénieurs mobile, experts en automatisation, designers UI/UX et closers commerciaux. Nous accompagnons les PME et grandes entreprises avec des solutions sur mesure, performantes et évolutives. Notre priorité : accélérer votre croissance, optimiser vos conversions et garantir des résultats mesurables.
+            </p>
+            <ul className="mt-8 space-y-3">
+              <li className="flex items-center gap-3 text-[14.53px] font-light leading-6 tracking-tight text-black">
+                <CheckIcon /> <span>Équipe internationale : +1000 experts disponibles pour vos projets digitaux.</span>
+              </li>
+              <li className="flex items-center gap-3 text-[14.53px] font-light leading-6 tracking-tight text-black">
+                <CheckIcon /> <span>Expertise globale : développement, mobile, automatisations, design et closing.</span>
+              </li>
+              <li className="flex items-center gap-3 text-[14.53px] font-light leading-6 tracking-tight text-black">
+                <CheckIcon /> <span>Résultats concrets : +35% de productivité et +25% de conversions en moyenne.</span>
+              </li>
+              <li className="flex items-center gap-3 text-[14.53px] font-light leading-6 tracking-tight text-black">
+                <CheckIcon /> <span>Accompagnement complet : de la stratégie à la mise en production.</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* --- PARTIE DROITE : IMAGES --- */}
+          <div className="w-full max-w-[421px] px-[20px] h-[549px] flex gap-4 overflow-hidden relative col-span-2">
+            {/* Colonne 1 */}
+            <div className="w-1/2 h-full">
+              <div className="flex flex-col h-max animate-scroll-vertical-reverse">
+                {/* On duplique les images pour un effet infini */}
+                {[...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images].map((img, index) => (
+                  <Image key={index} src={img.src} alt={`Expert photo ${index + 1}`} width={203} height={270} className="w-full h-auto rounded-2xl mb-4"/>
+                ))}
+              </div>
+            </div>
+            {/* Colonne 2 */}
+            <div className="w-1/2 h-full mt-[-100px]"> {/* Le mt négatif décale le début du scroll */}
+              <div className="flex flex-col h-max animate-scroll-vertical" style={{animationDuration: '40s'}}> {/* Durée différente pour un effet asynchrone */}
+                {/* On duplique les images */}
+                {[...column2Images, ...column2Images, ...column2Images, ...column2Images, ...column2Images, ...column2Images, ...column2Images, ...column2Images].map((img, index) => (
+                  <Image key={index} src={img.src} alt={`Team photo ${index + 1}`} width={203} height={270} className="w-full h-auto rounded-2xl mb-4"/>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const faqData = [
+  {
+    question: "Combien de temps dure la création d’un projet digital ?",
+    answer: [
+      "Le délai dépend de la complexité du projet et de vos besoins spécifiques.",
+      { type: 'list', items: ["Un site vitrine simple peut être livré en 3 à 4 semaines.", "Un site e-commerce, une application mobile ou une automatisation complète (CRM, facturation, gestion des leads…) peut nécessiter plusieurs mois."] },
+      "Un planning clair, détaillé et validé ensemble vous est fourni avant chaque démarrage afin de garantir un suivi transparent."
+    ]
+  },
+  {
+    question: "Travaillez-vous avec tous les secteurs d’activité ?",
+    answer: [
+      "Oui, nous accompagnons aussi bien des PME locales que des grands comptes internationaux, dans des secteurs variés : immobilier, santé, services, retail, industrie, formation, etc.",
+      "Notre méthodologie flexible nous permet de comprendre les spécificités de chaque métier et de proposer une solution digitale réellement adaptée."
+    ]
+  },
+  {
+    question: "Quel est votre secteur géographique ?",
+    answer: [
+      "Nous travaillons principalement en France, Belgique et Pays-bas, mais également à l’international grâce à nos équipes dématérialisées. Des rendez-vous peuvent être organisés :",
+      { type: 'list', items: ["en présentiel dans vos locaux,", "ou à distance via visioconférence et outils collaboratifs."] }
+    ]
+  },
+  {
+    question: "Quelles sont vos garanties ?",
+    answer: [
+      "Nous mettons en place des garanties pour sécuriser chaque projet :",
+      { type: 'list-numbered', items: ["Modifications illimitées jusqu’à validation finale.", "Garantie satisfait ou remboursé (selon conditions définies au contrat).", "Un interlocuteur unique pour un suivi fluide et personnalisé.", "Engagement de performance avec suivi SEO, optimisation de conversion et accompagnement post-livraison."] }
+    ]
+  },
+  {
+    question: "Quelle est votre expertise principale ?",
+    answer: [
+      "Nous sommes spécialisés dans 4 pôles complémentaires :",
+      { type: 'list', items: ["Création et refonte de sites internet modernes et optimisés SEO.", "Automatisations & agents IA pour gagner en productivité.", "Applications mobiles sur mesure (iOS & Android).", "Closing et prospection déléguée pour aider nos clients à transformer leurs leads en clients."] },
+      "Cette expertise 360° nous permet de proposer une stratégie digitale complète et cohérente."
+    ]
+  },
+  {
+    question: "Proposez-vous une grille tarifaire ?",
+    answer: [
+      "Chaque projet est unique, c’est pourquoi nous ne proposons pas de tarifs standards. Nos prix dépendent de plusieurs facteurs : complexité du projet, nombre de fonctionnalités, délais souhaités, accompagnement après livraison.",
+      "À l’issue du premier rendez-vous, nous fournissons une proposition commerciale détaillée incluant :",
+      { type: 'list', items: ["planning de réalisation,", "cahier des charges précis,", "coûts transparents sans frais cachés."] },
+      "Notre objectif : vous garantir le meilleur retour sur investissement."
+    ]
+  }
+];
+
+const FaqItem = ({ item, isOpen, onClick }) => {
+  return (
+    <div className="border-b border-black/10">
+      <button 
+        className="w-full flex justify-between items-center text-left py-6"
+        onClick={onClick}
+      >
+        <span className="text-[16.73px] leading-6 tracking-tight text-black">{item.question}</span>
+        <span className="flex-shrink-0 w-[22px] h-[22px] rounded-full bg-black flex items-center justify-center">
+          <ChevronDownIcons className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+        </span>
+      </button>
+      <div 
+        className="grid transition-all duration-500 ease-in-out"
+        style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
+      >
+        <div className="overflow-hidden">
+          <div className="pb-6 text-black/70 text-[16.73px] leading-6 tracking-tight space-y-4">
+            {item.answer.map((content, index) => {
+              if (typeof content === 'string') {
+                return <p key={index}>{content}</p>;
+              }
+              if (content.type === 'list') {
+                return <ul key={index} className="list-disc list-inside space-y-2 pl-2">{content.items.map((li, i) => <li key={i}>{li}</li>)}</ul>;
+              }
+              if (content.type === 'list-numbered') {
+                return <ol key={index} className="list-decimal list-inside space-y-2 pl-2">{content.items.map((li, i) => <li key={i}>{li}</li>)}</ol>;
+              }
+              return null;
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const FaqSection = () => {
+  const [openIndex, setOpenIndex] = useState(null);
+
+  const handleToggle = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  return (
+    <section id="faq" className="bg-white py-28">
+      <div className="container mx-auto px-6 text-center">
+        <h2 className="text-[39.22px] font-semibold leading-10 tracking-tight text-black">
+          Questions fréquentes.
+        </h2>
+        <p className="mt-4 text-[14.06px] leading-6 tracking-tight text-black/50 max-w-2xl mx-auto">
+          Retrouvez ici les réponses aux questions les plus fréquentes sur nos services.
+        </p>
+      </div>
+      
+      <div className="container mx-auto px-6 mt-16 max-w-5xl">
+        {faqData.map((item, index) => (
+          <FaqItem 
+            key={index} 
+            item={item}
+            isOpen={openIndex === index}
+            onClick={() => handleToggle(index)}
+          />
+        ))}
+      </div>
+      
+      <div className="text-center mt-16">
+        <a href="#contact" className="inline-flex items-center gap-2 bg-black text-white text-sm font-bold py-3 px-6 rounded-md hover:bg-brand-beige transition-colors duration-300">
+          <PaperIcon /> Devis Gratuit
+        </a>
+      </div>
+    </section>
+  );
+};
+
+const CustomSelect = ({ label, options, placeholder }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedValue, setSelectedValue] = useState(placeholder);
+  const selectRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (selectRef.current && !selectRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSelect = (value) => {
+    setSelectedValue(value);
+    setIsOpen(false);
+  };
+  return (
+    <div className="relative" ref={selectRef}>
+      <label className="block text-[14.53px] font-normal leading-6 tracking-tight text-black mb-2">{label}</label>
+      <button 
+        type="button" 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full h-12 px-3 text-sm border border-gray-900/10 rounded-[10px] flex justify-between items-center text-left"
+      >
+        <span className={selectedValue === placeholder ? "text-gray-400" : "text-black"}>{selectedValue}</span>
+        <ChevronDownIcon className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+
+      {/* Menu déroulant avec animation */}
+      <div className={`absolute top-full left-0 w-full mt-1 bg-white border border-gray-200 rounded-[10px] shadow-lg z-10 transition-all duration-300 ease-in-out transform ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
+        <div className="max-h-48 overflow-y-auto p-1">
+          {options.map((option, index) => (
+            <div 
+              key={index}
+              onClick={() => handleSelect(option)}
+              className="px-3 py-2 text-sm text-gray-700 hover:bg-brand-beige hover:text-white rounded-md cursor-pointer"
+            >
+              {option}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ContactForm = () => {
+  return (
+    <section id="contact" className="bg-gray-50 py-28">
+      <div className="container mx-auto px-6 text-center">
+        <h2 className="text-[39.22px] font-semibold leading-10 tracking-tight text-black">Demande de devis gratuit.</h2>
+        <div className="mt-4 text-black/50 max-w-3xl mx-auto">
+          <span className="text-[14.18px]">Remplissez le formulaire pour recevoir un devis gratuitement. </span>
+          <a href="mailto:votre.email@exemple.com" className="underline text-[13.71px]">Contactez-nous</a>
+          <span className="text-[15px]"> par email ou par </span>
+          <a href="tel:+33000000000" className="underline text-[15px]">téléphone</a>
+          <span className="text-[14.06px]"> pour une réponse plus rapide (WhatsApp disponible).</span>
+        </div>
+      </div>
+      
+      <div className="container mx-auto mt-16 max-w-[865px]">
+        <form className="bg-white rounded-2xl shadow-[0px_0px_6px_0px_rgba(0,0,0,0.25)] p-8">
+          <div className="mb-6">
+            <label htmlFor="fullName" className="block text-[13.83px] font-normal leading-6 tracking-tight text-black mb-2">Nom complet</label>
+            <input type="text" id="fullName" placeholder="David Dupont" className="w-full h-12 px-3 text-sm border border-gray-900/10 rounded-[10px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-beige" />
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label htmlFor="companyName" className="block text-[14.53px] font-normal leading-6 tracking-tight text-black mb-2">Raison Sociale</label>
+              <input type="text" id="companyName" placeholder="Exemple SA" className="w-full h-12 px-3 text-sm border border-gray-900/10 rounded-[10px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-beige" />
+            </div>
+            <CustomSelect label="Localisation" placeholder="Sélectionner" options={["France", "Belgique", "Pays-Bas", "International"]} />
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label htmlFor="email" className="block text-[14.53px] font-normal leading-6 tracking-tight text-black mb-2">Email</label>
+              <input type="email" id="email" placeholder="exemple@entreprise.com" className="w-full h-12 px-3 text-sm border border-gray-900/10 rounded-[10px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-beige" />
+            </div>
+            <div>
+              <label htmlFor="phone" className="block text-[14.53px] font-normal leading-6 tracking-tight text-black mb-2">Téléphone</label>
+              <input type="tel" id="phone" placeholder="Entrez votre numéro" className="w-full h-12 px-3 text-sm border border-gray-900/10 rounded-[10px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-beige" />
+            </div>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <CustomSelect label="Avez-vous un site internet ?" placeholder="Sélectionner" options={["Oui", "Non", "En projet"]} />
+            <div>
+              <label htmlFor="websiteLink" className="block text-[14.53px] font-normal leading-6 tracking-tight text-black mb-2">Lien de votre site internet (facultatif)</label>
+              <input type="url" id="websiteLink" placeholder="www.exemple.com" className="w-full h-12 px-3 text-sm border border-gray-900/10 rounded-[10px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-beige" />
+            </div>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <CustomSelect label="Service(s) souhaité(s)" placeholder="Sélectionner" options={["Création de site internet", "Automatisation & IA", "Application mobile", "Closing & Prospection"]} />
+            <CustomSelect label="Budget" placeholder="Sélectionner" options={["Moins de 3000€", "3000€ - 5000€", "5000€ - 10000€", "Plus de 10000€"]} />
+          </div>
+          
+          <div className="mb-6">
+            <label htmlFor="message" className="block text-[13.83px] font-normal leading-6 tracking-tight text-black mb-2">Message</label>
+            <textarea id="message" placeholder="Parlez-nous de votre projet avec le plus de détails possible..." rows="4" className="w-full p-3 text-sm border border-gray-900/10 rounded-[10px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-beige"></textarea>
+          </div>
+          
+          {/* Checkbox confidentialité - CORRIGÉ */}
+          <div className="flex items-center justify-center mb-6">
+            <input type="checkbox" id="confidentiality" className="h-4 w-4 rounded border-gray-300 text-brand-beige focus:ring-brand-beige" />
+            <label htmlFor="confidentiality" className="ml-2 block text-[11.06px] tracking-tight text-black/70">Vos informations sont 100% confidentielles. Aucun engagement.</label>
+          </div>
+          
+          <button type="submit" className="w-full h-12 bg-black text-white text-[11.44px] font-normal leading-4 tracking-tight rounded-[7px] hover:bg-gray-800 transition-colors duration-300">
+            Envoyer ma demande
+          </button>
+        </form>
+      </div>
+    </section>
+  );
+};
+
+const Footer = () => {
+  return (
+    <footer className="bg-white border-t border-gray-200">
+      <div className="container mx-auto px-6 lg:px-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 py-16">
+          
+          {/* --- PARTIE GAUCHE --- */}
+          <div className="lg:col-span-1 flex flex-col items-center md:items-start text-center md:text-left">
+            <a href="#accueil" className="font-['Mada'] text-[21px] font-semibold leading-[65px] tracking-[-1.5px] text-black">
+              MUNTU<span className="font-light text-[21px] text-black/60">LABS</span>
+            </a>
+            <p className="mt-2 text-[14.18px] leading-[21px] tracking-tight text-black max-w-xs">
+              Solutions digitales 360° : création de sites internet, apps mobiles, automatisations intelligentes et services de closing B2B.
+            </p>
+            <div className="flex items-center gap-5 mt-6">
+              <a href="#" className="text-black hover:opacity-70 transition-opacity"><InstagramIcon /></a>
+              <a href="#" className="text-black hover:opacity-70 transition-opacity"><LinkedinIcon /></a>
+              <a href="#" className="text-black hover:opacity-70 transition-opacity"><FacebookIcon /></a>
+            </div>
+          </div>
+
+          {/* --- PARTIE DROITE (Conteneur) --- */}
+          <div className="lg:col-span-2 flex justify-center md:justify-end">
+            <div className="flex flex-col sm:flex-row gap-12 text-center sm:text-left">
+              {/* Colonne Contact */}
+              <div className="space-y-3">
+                <h3 className="font-medium text-[17px] leading-6 tracking-tight text-black">Contact général</h3>
+                <div className="space-y-1">
+                  <p><a href="tel:+33756938435" className="text-[13.95px] leading-6 tracking-tight text-black hover:underline">+33 7 56 93 84 35</a></p>
+                  <p><a href="mailto:contact@muntulabs.com" className="text-[13.83px] leading-6 tracking-tight text-black hover:underline">contact@muntulabs.com</a></p>
+                  <p><a href="#" className="text-[14.06px] leading-6 tracking-tight text-black hover:underline">Mentions légales</a></p>
+                </div>
+              </div>
+
+              {/* Colonne Présence */}
+              <div className="space-y-3">
+                <h3 className="font-medium text-[17px] leading-6 tracking-tight text-black">Présence en Europe</h3>
+                <div className="space-y-1">
+                  <p className="flex items-center gap-2 text-[13.95px] leading-6 tracking-tight text-black">France  <FranceFlagIcon /></p>
+                  <p className="flex items-center gap-2 text-[13.83px] leading-6 tracking-tight text-black">Belgique <BelgiumFlagIcon /></p>
+                  <p className="flex items-center gap-2 text-[14.06px] leading-6 tracking-tight text-black">Pays-Bas <NetherlandsFlagIcon /></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* --- Ligne Copyright --- */}
+        <div className="border-t border-gray-200/80 py-6 text-center">
+          <p className="text-[13.83px] leading-6 tracking-tight text-black">
+            Copyright © {new Date().getFullYear()} - MuntuLabs. Tous droits réservés.
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
 export default function Home() {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 650);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const navTextClass = isScrolled ? 'text-black' : 'text-white';
+
 
   return (
     <div className="bg-white text-black min-h-screen">
-      <nav className="fixed top-0 left-0 right-0 z-50 h-[72px] bg-white/50 backdrop-blur-sm ">
+      <nav className="fixed top-0 left-0 right-0 z-50 h-[72px] bg-white/20 backdrop-blur-sm ">
       <div className="container mx-auto px-6 h-full flex justify-between items-center">
           
         <div className="flex-shrink-0">   
-            <a href="#accueil">
-                  <Image
-                    src="/logo.png" 
-                    alt="Logo de l'entreprise"
-                    width={75}
-                    height={35}
-                    priority
-                  />
-                </a>
+        <a 
+              href="#accueil" 
+              className={`font-['Mada']   transition-colors duration-300
+                ${isScrolled ? 'text-black' : 'text-white'}`}
+            >
+              <span className="text-[21px] font-semibold leading-[65px] tracking-[-1.5px]">MUNTU</span>
+              <span className={`font-xs text-[21px] ${isScrolled ? 'text-black/60' : 'text-white/60'}`}>LABS</span>
+            </a>
           </div>
 
           <div className="hidden md:flex items-center space-x-8">
@@ -226,7 +697,7 @@ export default function Home() {
           <div className="flex-shrink-0">
             <a 
               href="#contact" 
-              className="bg-black text-white font-medium text-[14.40px] leading-[21px] tracking-[-0.5px] rounded-[7px] flex items-center justify-center  gap-2 w-[119px] h-[37px]  transform hover:scale-105 transition-transform duration-300 ease-out"
+              className="bg-black text-white font-medium text-sm leading-[21px] tracking-[-0.5px] rounded-[7px] flex items-center justify-center  gap-2 py-3 px-6  transform hover:scale-105 transition-transform duration-300 ease-out"
             >
               <PaperIcon />
               <span>Devis Gratuit</span>
@@ -330,7 +801,7 @@ export default function Home() {
                 </p>
             </div>
             
-            <div className="relative z-40 container mx-auto" style={{ height: `${servicesData.length * 80}vh`, marginTop: '-24px' }}> 
+            <div className="relative z-40 container mx-auto" style={{ height: `${servicesData.length * 84}vh`, marginTop: '-24px' }}> 
                 {servicesData.map((service, index) => (
                     <div 
                         key={index} 
@@ -534,23 +1005,31 @@ export default function Home() {
   </div>
 </section>
 
-        <section id="realisations" className="min-h-screen flex items-center justify-center bg-gray-100 pt-20">
-          <h2 className="text-3xl font-bold">Section Réalisations</h2>
+<section id="realisations" className=" py-16">
+          <div className="container mx-auto px-6 text-center">
+            <h2 className="text-[39.84px] font-semibold leading-tight tracking-tight text-black">
+              Nos articles et conseils.
+            </h2>
+            <p className="mt-4 text-[14.18px] leading-6 tracking-tight text-black/50 max-w-2xl mx-auto">
+              Découvrez nos analyses, astuces et actualités pour booster votre activité digitale.
+            </p>
+          </div>
+          <RealisationsCarousel />
         </section>
 
-        <section id="faq" className="min-h-screen flex items-center justify-center bg-white pt-20">
-          <h2 className="text-3xl font-bold">Section FAQ</h2>
+        <ExpertsSection />
+
+        <section id="faq" className="min-h-screen flex items-center justify-center bg-white pt-0">
+        <FaqSection />
         </section>
 
-        <section id="contact" className="min-h-screen flex items-center justify-center bg-black text-white pt-20">
-          <h2 className="text-3xl font-bold">Section Contact</h2>
+        <section id="contact" className="min-h-screen flex items-center justify-center bg-white pt-0">
+        <ContactForm />
         </section>
       </main>
 
-      <footer className="bg-gray-800 text-white py-6 text-center">
-        {/* Correction de l'apostrophe ici */}
-        <p>&copy; {new Date().getFullYear()} L&apos;équipe de votre entreprise. Tous droits réservés.</p>
-      </footer>
+         <Footer />
+
     </div>
   );
 }
