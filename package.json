@@ -9,10 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "embla-carousel-react": "^8.6.0",
+    "framer-motion": "^12.23.12",
     "geist": "^1.5.1",
     "next": "14.2.5",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "use-intersection-observer": "^0.1.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.19",
