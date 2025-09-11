@@ -1,6 +1,13 @@
-// 1. On importe la police directement depuis le paquet que nous avons installé.
+
 import { GeistSans } from "geist/font/sans";
+import { Mada } from "next/font/google";
 import "./globals.css";
+
+const mada = Mada({
+  subsets: ['latin'],
+  weight: ['300', '600'], 
+  variable: '--font-mada',
+});
 
 export const metadata = {
   title: "Votre Nom d'Entreprise - Landing Page",
@@ -10,9 +17,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="fr">
-      {/* 2. On applique directement la classe de la police sur le body.
-             Plus besoin de créer de variable. */ }
-      <body className={`${GeistSans.className} antialiased`}>
+      <body className={`${GeistSans.className}  ${mada.variable} antialiased`}>
         {children}
       </body>
     </html>
