@@ -469,7 +469,7 @@ const FaqSection = () => {
         </p>
       </div>
       
-      <div className="container mx-auto px-6 mt-16 max-w-5xl">
+      <div className="faqs container mx-auto px-6 mt-16 max-w-5xl">
         {faqData.map((item, index) => (
           <FaqItem 
             key={index} 
