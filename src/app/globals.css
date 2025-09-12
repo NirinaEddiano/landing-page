@@ -5,3 +5,8 @@
 html {
   scroll-behavior: smooth;
 }
+@media (max-width: 768px) {
+html,body {
+  @apply overflow-x-hidden;
+}
+}
