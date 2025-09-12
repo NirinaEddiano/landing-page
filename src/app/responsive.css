@@ -200,6 +200,9 @@
 
 /* --- Styles pour les écrans de type tablette et mobile (jusqu'à 1023px) --- */
 @media (max-width: 1024px) {
+  .faqs{
+    padding:26px;
+  }
 
   /* ===== SECTION EXPERTS ===== */
 
@@ -254,3 +257,4 @@
     z-index: 20 !important;
   }
 }
+
