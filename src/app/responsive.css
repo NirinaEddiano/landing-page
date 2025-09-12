@@ -17,7 +17,7 @@
   .service-card-mobile {
     padding:24px;
     height: auto !important; /* La hauteur devient automatique */
-    padding-bottom: 2rem; /* Espace en bas de chaque carte */
+    padding-bottom: 0rem; /* Espace en bas de chaque carte */
   }
 
   .realiations{
@@ -193,5 +193,64 @@
   }
   .methodes-grid-mobile{
     left: -105px;
+  }
+}
+
+/* src/app/responsive.css */
+
+/* --- Styles pour les écrans de type tablette et mobile (jusqu'à 1023px) --- */
+@media (max-width: 1024px) {
+
+  /* ===== SECTION EXPERTS ===== */
+
+  /* On force la grille principale à passer sur une seule colonne */
+  .expert-grid-container {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* La partie texte prend toute la largeur */
+  .expert-text-content {
+    align-items: center;
+    grid-column: span 1 / span 1 !important;
+    padding: 2.5rem 1.5rem !important; /* On réduit le padding */
+    text-align: center; /* On centre le texte */
+  }
+
+  /* On centre les listes à puces */
+  .expert-text-content ul {
+    align-items: center;
+    display: inline-flex;
+    flex-direction: column;
+  }
+
+  /* La partie images passe en dessous */
+  .expert-image-carousel {
+    grid-column: span 1 / span 1 !important;
+    max-width: 100% !important; /* Occupe toute la largeur */
+    height: 340px !important;   /* Hauteur fixe pour le conteneur des images */
+    padding: 0 !important;
+    border-radius: 10px !important;
+  }
+
+  /* --- SECTION SERVICES (pour les tablettes à 1024px et moins) --- */
+
+  /* On désactive l'animation "sticky" */
+  .services-sticky-card {
+    position: static !important; /* Annule le "sticky" */
+    height: auto !important;     /* Hauteur automatique */
+    margin-bottom: 3rem;      /* Espace entre les cartes */
+  }
+
+  /* On ajuste le conteneur principal */
+  .services-main-container {
+    height: auto !important; /* Annule la hauteur de défilement calculée */
+    margin-top: 2rem !important;
+  }
+
+  /* On garde le titre collant en haut */
+  .services-sticky-title {
+    position: sticky !important;
+    top: 72px !important;
+    z-index: 20 !important;
   }
 }
