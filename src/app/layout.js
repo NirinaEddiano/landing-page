@@ -2,6 +2,7 @@
 import { GeistSans } from "geist/font/sans";
 import { Mada } from "next/font/google";
 import "./globals.css";
+import "./responsive.css";
 
 const mada = Mada({
   subsets: ['latin'],
@@ -16,8 +17,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="fr">
-      <body className={`${GeistSans.className}  ${mada.variable} antialiased`}>
+    <html lang="fr" >
+      <body className={`${GeistSans.className}  ${mada.variable} antialiased `}>
         {children}
       </body>
     </html>
