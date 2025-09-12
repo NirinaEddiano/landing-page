@@ -28,6 +28,7 @@ const NetherlandsFlagIcon = () => <svg width="20" height="15" viewBox="0 0 9 6" 
 <rect fill="#21468B" y="4" width="9" height="2" />
 </svg>;
 
+
 const LogoCarousel = () => {
   const logos = [
     { src: '/logos/logo1.svg', alt: 'Logo 1', width: 56, height: 56 },
@@ -43,7 +44,7 @@ const LogoCarousel = () => {
   ];
   return (
     <div className="bg-white w-full py-12">
-      <div className="relative w-full max-w-5xl mx-auto overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
+      <div className="relative w-full max-w-5xl sm:max-w-1xl mx-auto overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
         <div className="flex w-max animate-scroll">
           {[...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos].map((logo, index) => (
             <div key={index} className="flex-none flex items-center justify-center mx-[22.5px]" style={{ width: `${logo.width}px`}}>
@@ -180,7 +181,7 @@ const testimonialsRow2 = [
 
 
 const TestimonialCard = ({ review }) => (
-  <div className="flex-none bg-white border border-gray-200 rounded-2xl shadow-sm w-[501px] h-[300px] p-8 flex flex-col justify-between">
+  <div className="TestimonialCard flex-none bg-white border border-gray-200 rounded-2xl shadow-sm w-[401px] h-[350px] p-6 flex flex-col justify-between ">
     <div className="flex">
       {[...Array(review.stars)].map((_, i) => <StarIcon key={i} className="w-5 h-5 text-yellow-400" />)}
     </div>
@@ -212,15 +213,27 @@ const realisationsData = [
 
 
 const RealisationsCarousel = () => {
+  // Hook pour détecter si on est sur un écran mobile
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024); // 768px est le point de rupture 'md' de Tailwind
+    };
+    checkMobile(); // Vérifier au chargement initial
+    window.addEventListener('resize', checkMobile); // Vérifier lors du redimensionnement
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Configuration dynamique du carrousel
   const [emblaRef, emblaApi] = useEmblaCarousel({ 
     loop: true, 
-    align: 'start',
+    align: isMobile ? 'center' : 'start', // Centrer sur mobile, aligner à gauche sur desktop
     slidesToScroll: 1,
   });
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
-
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -236,11 +249,23 @@ const RealisationsCarousel = () => {
   return (
     <div className="relative container mx-auto mt-10">
       <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex -ml-4">
+        {/*
+          Sur mobile (sans préfixe), on ne met pas de marge négative.
+          Sur desktop (lg:), on la remet pour que les 3 slides collent bien.
+        */}
+        <div className="flex lg:-ml-4">
           {realisationsData.map((item, index) => (
-            <div key={index} className="flex-none w-full md:w-1/2 lg:w-1/3 pl-4">
-              <div className="relative w-[407px] h-[474px] rounded-[18px] bg-[#fdfdfd] overflow-hidden group">
-                <Image src={item.imageSrc} alt={item.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105"/>
+            <div 
+              key={index}
+              className="flex-none w-[90%] lg:w-1/3 px-2 lg:pl-4"
+            >
+              <div className="relative w-full h-[474px] rounded-[18px] bg-[#fdfdfd] overflow-hidden group">
+                <Image 
+                  src={item.imageSrc} 
+                  alt={item.title} 
+                  fill 
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 p-6 text-white w-full flex justify-between items-end">
                   <div>
@@ -257,11 +282,11 @@ const RealisationsCarousel = () => {
         </div>
       </div>
       
-      {/* Boutons de navigation */}
-      <button onClick={scrollPrev} className="absolute top-1/2 left-4 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/20 backdrop-blur-sm flex items-center justify-center hover:bg-black/40 transition-colors">
+      {/* Boutons de navigation (cachés sur mobile par défaut) */}
+      <button onClick={scrollPrev} className="absolute top-1/2 left-4 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/20 backdrop-blur-sm flex items-center justify-center hover:bg-black/40 transition-colors  lg:flex">
         <ChevronLeftIcon />
       </button>
-      <button onClick={scrollNext} className="absolute top-1/2 right-4 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/20 backdrop-blur-sm flex items-center justify-center hover:bg-black/40 transition-colors">
+      <button onClick={scrollNext} className="absolute top-1/2 right-4 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/20 backdrop-blur-sm flex items-center justify-center hover:bg-black/40 transition-colors  lg:flex">
         <ChevronRightIcon />
       </button>
       
@@ -281,63 +306,62 @@ const RealisationsCarousel = () => {
 
 const ExpertsSection = () => {
   const column1Images = [
-    { src: "/col1-1.jpg" }, { src: "/col1-2.jpg" }, { src: "/col1-3.jpg" }
+  { src: "/col1-1.jpg" }, { src: "/col1-2.jpg" }, { src: "/col1-3.jpg" }
   ];
   const column2Images = [
-    { src: "/col2-1.jpg" }, { src: "/col2-2.jpg" }
+  { src: "/col2-1.jpg" }, { src: "/col2-2.jpg" }
   ];
   return (
-    <section className="bg-white py-28">
-      <div className="container mx-auto px-6">
-        <div className="bg-white rounded-3xl shadow-[0px_0px_9px_3px_rgba(0,0,0,0.1)] grid lg:grid-cols-1 lg:grid-cols-5 max-w-[1281px] mx-auto overflow-hidden">
-          {/* --- PARTIE GAUCHE : TEXTE --- */}
-          <div className="p-12 lg:p-16  flex flex-col justify-center col-span-3 ">
-            <h2 className="text-[35.3px] font-semibold leading-9 tracking-tight text-black">
-              Un réseau d’experts digitaux.
-            </h2>
-            <p className="mt-6 text-[14.06px] leading-[21px] tracking-tight text-black/50 max-w-[600px]">
-              Notre agence digitale s’appuie sur un réseau de plus de 1000 professionnels expérimentés : développeurs web, ingénieurs mobile, experts en automatisation, designers UI/UX et closers commerciaux. Nous accompagnons les PME et grandes entreprises avec des solutions sur mesure, performantes et évolutives. Notre priorité : accélérer votre croissance, optimiser vos conversions et garantir des résultats mesurables.
-            </p>
-            <ul className="mt-8 space-y-3">
-              <li className="flex items-center gap-3 text-[14.53px] font-light leading-6 tracking-tight text-black">
-                <CheckIcon /> <span>Équipe internationale : +1000 experts disponibles pour vos projets digitaux.</span>
-              </li>
-              <li className="flex items-center gap-3 text-[14.53px] font-light leading-6 tracking-tight text-black">
-                <CheckIcon /> <span>Expertise globale : développement, mobile, automatisations, design et closing.</span>
-              </li>
-              <li className="flex items-center gap-3 text-[14.53px] font-light leading-6 tracking-tight text-black">
-                <CheckIcon /> <span>Résultats concrets : +35% de productivité et +25% de conversions en moyenne.</span>
-              </li>
-              <li className="flex items-center gap-3 text-[14.53px] font-light leading-6 tracking-tight text-black">
-                <CheckIcon /> <span>Accompagnement complet : de la stratégie à la mise en production.</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* --- PARTIE DROITE : IMAGES --- */}
-          <div className="w-full max-w-[421px] px-[20px] h-[549px] flex gap-4 overflow-hidden relative col-span-2">
-            {/* Colonne 1 */}
-            <div className="w-1/2 h-full">
-              <div className="flex flex-col h-max animate-scroll-vertical-reverse">
-                {/* On duplique les images pour un effet infini */}
-                {[...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images].map((img, index) => (
-                  <Image key={index} src={img.src} alt={`Expert photo ${index + 1}`} width={203} height={270} className="w-full h-auto rounded-2xl mb-4"/>
-                ))}
-              </div>
+  <section className="bg-white py-28">
+  <div className="container mx-auto px-6">
+  <div className="expert-titre expert-grid-container bg-white rounded-3xl shadow-[0px_0px_9px_3px_rgba(0,0,0,0.1)] grid grid-cols-1 lg:grid-cols-5 max-w-[1281px] mx-auto overflow-hidden">
+  {/* --- PARTIE GAUCHE : TEXTE --- */}
+  <div className="expert-text-content p-12 lg:p-16  flex flex-col justify-center col-span-3 ">
+  <h2 className="mon-titre mon-titre1 text-[35.3px] font-semibold leading-9 tracking-tight text-black">
+  Un réseau d’experts digitaux.
+  </h2>
+  <p className="mt-6 text-[14.06px] leading-[21px] tracking-tight text-black/50 max-w-[600px]">
+  Notre agence digitale s’appuie sur un réseau de plus de 1000 professionnels expérimentés : développeurs web, ingénieurs mobile, experts en automatisation, designers UI/UX et closers commerciaux. Nous accompagnons les PME et grandes entreprises avec des solutions sur mesure, performantes et évolutives. Notre priorité : accélérer votre croissance, optimiser vos conversions et garantir des résultats mesurables.
+  </p>
+  <ul className="mt-8 space-y-3">
+  <li className="flex items-center gap-3 text-[14.53px] font-light leading-6 tracking-tight text-black">
+  <CheckIcon /> <span>Équipe internationale : +1000 experts disponibles pour vos projets digitaux.</span>
+  </li>
+  <li className="flex items-center gap-3 text-[14.53px] font-light leading-6 tracking-tight text-black">
+  <CheckIcon /> <span>Expertise globale : développement, mobile, automatisations, design et closing.</span>
+  </li>
+  <li className="flex items-center gap-3 text-[14.53px] font-light leading-6 tracking-tight text-black">
+  <CheckIcon /> <span>Résultats concrets : +35% de productivité et +25% de conversions en moyenne.</span>
+  </li>
+  <li className="flex items-center gap-3 text-[14.53px] font-light leading-6 tracking-tight text-black">
+  <CheckIcon /> <span>Accompagnement complet : de la stratégie à la mise en production.</span>
+  </li>
+  </ul>
+  </div>
+  {/* --- PARTIE DROITE : IMAGES --- */}
+        <div className="mon-carousel expert-image-carousel w-full max-w-[421px] px-[20px] h-[549px] flex gap-4 overflow-hidden relative lg:col-span-2 ">
+          {/* Colonne 1 */}
+          <div className="carousel w-1/2   h-full">
+            <div className="flex flex-col h-max animate-scroll-vertical-reverse">
+              {/* On duplique les images pour un effet infini */}
+              {[...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images, ...column1Images].map((img, index) => (
+                <Image key={index} src={img.src} alt={`Expert photo ${index + 1}`} width={203} height={270} className="w-full h-auto rounded-2xl mb-4"/>
+              ))}
             </div>
-            {/* Colonne 2 */}
-            <div className="w-1/2 h-full mt-[-100px]"> {/* Le mt négatif décale le début du scroll */}
-              <div className="flex flex-col h-max animate-scroll-vertical" style={{animationDuration: '40s'}}> {/* Durée différente pour un effet asynchrone */}
-                {/* On duplique les images */}
-                {[...column2Images, ...column2Images, ...column2Images, ...column2Images, ...column2Images, ...column2Images, ...column2Images, ...column2Images].map((img, index) => (
-                  <Image key={index} src={img.src} alt={`Team photo ${index + 1}`} width={203} height={270} className="w-full h-auto rounded-2xl mb-4"/>
-                ))}
-              </div>
+          </div>
+          {/* Colonne 2 */}
+          <div className="carousel w-1/2 h-full mt-[-100px]"> {/* Le mt négatif décale le début du scroll */}
+            <div className="flex flex-col h-max animate-scroll-vertical" style={{animationDuration: '40s'}}> {/* Durée différente pour un effet asynchrone */}
+              {/* On duplique les images */}
+              {[...column2Images, ...column2Images, ...column2Images, ...column2Images, ...column2Images, ...column2Images, ...column2Images, ...column2Images].map((img, index) => (
+                <Image key={index} src={img.src} alt={`Team photo ${index + 1}`} width={203} height={270} className="w-full h-auto rounded-2xl mb-4"/>
+              ))}
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
   );
 };
 
@@ -437,7 +461,7 @@ const FaqSection = () => {
   return (
     <section id="faq" className="bg-white py-28">
       <div className="container mx-auto px-6 text-center">
-        <h2 className="text-[39.22px] font-semibold leading-10 tracking-tight text-black">
+        <h2 className="mon-titre text-[39.22px] font-semibold leading-10 tracking-tight text-black">
           Questions fréquentes.
         </h2>
         <p className="mt-4 text-[14.06px] leading-6 tracking-tight text-black/50 max-w-2xl mx-auto">
@@ -518,7 +542,7 @@ const ContactForm = () => {
   return (
     <section id="contact" className=" py-28">
       <div className="container mx-auto px-6 text-center">
-        <h2 className="text-[39.22px] font-semibold leading-10 tracking-tight text-black">Demande de devis gratuit.</h2>
+        <h2 className="mon-titre text-[39.22px] font-semibold leading-10 tracking-tight text-black">Demande de devis gratuit.</h2>
         <div className="mt-4 text-black/50 max-w-3xl mx-auto">
           <span className="text-[14.18px]">Remplissez le formulaire pour recevoir un devis gratuitement. </span>
           <a href="mailto:votre.email@exemple.com" className="underline text-[13.71px]">Contactez-nous</a>
@@ -528,8 +552,8 @@ const ContactForm = () => {
         </div>
       </div>
       
-      <div className="container mx-auto mt-16 max-w-[865px]">
-        <form className="bg-white rounded-2xl shadow-[0px_0px_6px_0px_rgba(0,0,0,0.25)] p-8">
+      <div className="contacts container mx-auto mt-16 max-w-[865px]">
+        <form className=" bg-white rounded-2xl shadow-[0px_0px_6px_0px_rgba(0,0,0,0.25)] p-8">
           <div className="mb-6">
             <label htmlFor="fullName" className="block text-[13.83px] font-normal leading-6 tracking-tight text-black mb-2">Nom complet</label>
             <input type="text" id="fullName" placeholder="David Dupont" className="w-full h-12 px-3 text-sm border border-gray-900/10 rounded-[10px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-beige" />
@@ -647,14 +671,50 @@ const Footer = () => {
 
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 650);
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const navTextClass = isScrolled ? 'text-black' : 'text-white';
+
+  const MobileMenu = ({ isOpen, setIsOpen }) => {
+    const handleLinkClick = () => setIsOpen(false);
+    return (
+      <div onClick={() => setIsOpen(false)} className={`fixed inset-0 z-40 transition-opacity duration-300 lg:hidden ${isOpen ? 'opacity-100 bg-black/30' : 'opacity-0 pointer-events-none'}`}>
+        <div onClick={(e) => e.stopPropagation()} className={`absolute left-0 w-full bg-white/20 backdrop-blur-xl   shadow-xl rounded-b-2xl transition-all duration-500 ease-in-out ${isOpen ? 'top-[70px] opacity-100' : '-top-full opacity-0'}`}>
+          <div className="flex flex-col items-center space-y-6 p-8 text-lg font-medium text-white">
+            <a href="#accueil" onClick={handleLinkClick} className="hover:text-brand-beige">Accueil</a>
+            <a href="#services" onClick={handleLinkClick} className="hover:text-brand-beige">Services</a>
+            <a href="#methode" onClick={handleLinkClick} className="hover:text-brand-beige">Méthode</a>
+            <a href="#avis" onClick={handleLinkClick} className="hover:text-brand-beige">Avis Clients</a>
+            <a href="#realisations" onClick={handleLinkClick} className="hover:text-brand-beige">Réalisations</a>
+            <a href="#faq" onClick={handleLinkClick} className="hover:text-brand-beige">FAQ</a>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+
+  const BurgerIcon = ({ isOpen }) => (
+  <div className="w-5 h-5 relative">
+    <span className={`block w-full h-0.5 bg-black rounded-full absolute transition-all duration-300 ease-in-out ${isOpen ? 'rotate-45 top-1/2 -translate-y-1/2' : 'top-1'}`}></span>
+    <span className={`block w-full h-0.5 bg-black rounded-full absolute top-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out ${isOpen ? 'opacity-0' : 'opacity-100'}`}></span>
+    <span className={`block w-full h-0.5 bg-black rounded-full absolute transition-all duration-300 ease-in-out ${isOpen ? '-rotate-45 top-1/2 -translate-y-1/2' : 'bottom-1'}`}></span>
+  </div>
+);
+
+
+
+useEffect(() => {
+  const handleScroll = () => setIsScrolled(window.scrollY > 10);
+  window.addEventListener('scroll', handleScroll);
+  return () => window.removeEventListener('scroll', handleScroll);
+}, []);
 
 
   return (
@@ -662,18 +722,18 @@ export default function Home() {
       <nav className="fixed top-0 left-0 right-0 z-50 h-[72px] bg-white/20 backdrop-blur-sm ">
       <div className="container mx-auto px-6 h-full flex justify-between items-center">
           
-        <div className="flex-shrink-0">   
+        <div className=" flex-shrink-0">   
         <a 
               href="#accueil" 
               className={`font-['Mada']   transition-colors duration-300
                 ${isScrolled ? 'text-black' : 'text-white'}`}
             >
-              <span className="text-[21px] font-semibold leading-[65px] tracking-[-1.5px]">MUNTU</span>
-              <span className={`font-xs text-[21px] ${isScrolled ? 'text-black/60' : 'text-white/60'}`}>LABS</span>
+              <span className="mon-logo text-[21px] font-semibold leading-[65px] tracking-[-1.5px]">MUNTU</span>
+              <span className={`mon-logo font-xs text-[21px] ${isScrolled ? 'text-black/60' : 'text-white/60'}`}>LABS</span>
             </a>
           </div>
 
-          <div className="hidden md:flex items-center space-x-8">
+          <div className={`hidden lg:flex items-center space-x-8 font-medium ${navTextClass}`}>
             <a href="#accueil" className="font-medium text-[14.41px] leading-[21px] tracking-[-0.5px] text-black hover:opacity-75 transition-opacity">
               Accueil
             </a>
@@ -694,26 +754,28 @@ export default function Home() {
             </a>
           </div>
 
-          <div className="flex-shrink-0">
+          <div className="mon-bouton flex-shrink-0">
             <a 
               href="#contact" 
-              className="bg-black text-white font-medium text-sm leading-[21px] tracking-[-0.5px] rounded-[7px] flex items-center justify-center  gap-2 py-3 px-6  transform hover:scale-105 transition-transform duration-300 ease-out"
+              className="mon-bouton-devis  bg-black text-white font-medium text-sm leading-[21px] tracking-[-0.5px] rounded-[7px] flex items-center justify-center  gap-2 py-3 px-6 md:text-sm sm:py-2 sm:px-4 md:rounded-[7px]  transform hover:scale-105 transition-transform duration-300 ease-out"
             >
               <PaperIcon />
               <span>Devis Gratuit</span>
             </a>
           </div>
 
-          <div className="md:hidden">
-            <button className="text-black focus:outline-none">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-              </svg>
-            </button>
-          </div>
+          <div className="lg:hidden flex items-center gap-3">
+          <button 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="w-8 h-8 rounded-[7px] border border-black/10 flex items-center justify-center bg-transparent"
+          >
+            <BurgerIcon isOpen={isMenuOpen} />
+          </button>
         </div>
+        </div>
+        
       </nav>
-
+      <MobileMenu isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} />
       <main>
       <section id="accueil" className="relative h-screen flex items-center justify-center">
           <div className="absolute inset-0 z-0 ">
@@ -768,12 +830,12 @@ export default function Home() {
               </div>
             </div>
 
-            <h1 className="font-bold text-[42.89px] leading-[54px] tracking-[-1.3px] max-w-[536px] mb-6">
+            <h1 className="mon-titre font-bold text-[42.89px] leading-[54px] tracking-[-1.3px] max-w-[536px] mb-6">
               Une stratégie optimisée.<br/>
               Un système qui convertit.
             </h1>
             
-            <p className="font-normal text-[16.73px] leading-[25.2px] tracking-[-0.5px] max-w-[492px] mb-8">
+            <p className="mon-texte font-normal text-[16.73px] leading-[25.2px] tracking-[-0.5px] max-w-[492px] mb-8">
               Sites performants, automatisations intelligentes, applications mobiles sur mesure et un service de closing pour transformer vos prospects en clients.
             </p>
 
@@ -791,8 +853,8 @@ export default function Home() {
         <LogoCarousel />
 
         <section id="services" className="relative bg-white pt-16 pb-28">
-            <div className="container mx-auto px-6 text-center py-8 sticky top-[72px] z-20 bg-white/80 backdrop-blur-sm"> 
-                <h2 className="font-semibold text-[39.22px] leading-[40px] tracking-[-0.2px] text-black">
+            <div className="services-sticky-title container mx-auto px-6 text-center py-8 sticky top-[72px] z-20 bg-white/80 backdrop-blur-sm"> 
+                <h2 className="mon-titre font-semibold text-[39.22px] leading-[40px] tracking-[-0.2px] text-black">
                     Découvrez nos services.
                 </h2>
                 <p className="mt-4 font-normal text-[13.95px] leading-[21px] tracking-[-0.5px] text-neutral-600 max-w-2xl mx-auto">
@@ -801,25 +863,25 @@ export default function Home() {
                 </p>
             </div>
             
-            <div className="relative z-40 container mx-auto" style={{ height: `${servicesData.length * 84}vh`, marginTop: '-24px' }}> 
+            <div className="services-container-mobile services-main-container relative z-40 container mx-auto" style={{ height: `${servicesData.length * 84}vh`, marginTop: '-24px' }}> 
                 {servicesData.map((service, index) => (
                     <div 
                         key={index} 
-                        className="sticky flex items-center justify-center w-full"
+                        className="service-card-mobile services-sticky-card  lg:sticky lg:flex items-center justify-center w-full"
                         style={{ top: `calc(200px + ${index * 0}px)` }}
                     >
-                        <div className="bg-white p-8 rounded-2xl shadow-2xl grid md:grid-cols-2 gap-12 items-center max-w-5xl w-full">
-                            <div className="w-full">
+                        <div className="service-grid-mobile bg-white p-8 rounded-2xl shadow-2xl grid md:grid-cols-  lg:grid-cols-2  gap-12 items-center max-w-5xl w-full">
+                            <div className="w-full ">
                                 <Image 
                                     src={service.imageSrc} 
                                     alt={service.title} 
                                     width={512} 
                                     height={426} 
-                                    className="rounded-[16px] object-cover w-[512px] h-[426px]"
+                                    className="service-image-mobile md:w-full rounded-[16px] object-cover w-[512px] h-[426px]"
                                 />
                             </div>
                             <div className="flex flex-col items-start text-left">
-                                <h3 className="font-semibold text-[28.01px] leading-[45px] tracking-[-0.7px] text-black">
+                                <h3 className="service-title-mobile font-semibold text-[28.01px] leading-[45px] tracking-[-0.7px] text-black">
                                     {service.title}
                                 </h3>
                                 <ul className="mt-6 space-y-4">
@@ -846,9 +908,9 @@ export default function Home() {
         
         {/* ... Répétez pt-20 pour les autres sections ... */}
         
-        <section id="methode" className="bg-gray-50 py-28">
+        <section id="methode" className="bg-gray-50 py-8 pt-[0px]">
           <div className="container mx-auto px-6 text-center">
-            <h2 className="text-4xl font-semibold tracking-tight text-black">
+            <h2 className="mon-titre text-4xl font-semibold tracking-tight text-black">
               Notre méthode de travail.
             </h2>
             <p className="mt-4 text-base leading-7 text-black/50 max-w-2xl mx-auto">
@@ -859,11 +921,11 @@ export default function Home() {
           <div className="container mx-auto px-6 mt-16 grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-16">
             
             {/* --- CARTE 1 --- */}
-            <div className="border border-gray-200/80 rounded-[32px] w-full max-w-[534px] h-[480px] mx-auto flex flex-col p-8 group">
-              <div className="relative w-[470px] h-[332px] mx-auto [mask-image:linear-gradient(to_bottom,black_50%,transparent_100%)]">
-                <Image src="/methode-1c.jpg" alt="Maquette 3" width={204} height={250.99} className="rounded-2xl absolute top-1/2 left-1/2 -translate-x-[-20px] -translate-y-1/2 z-40  transform rotate-3 transition-transform duration-500 ease-in-out group-hover:rotate-[8deg] "/>
-                <Image src="/methode-1b.jpg" alt="Maquette 2" width={190} height={250.99} className="rounded-2xl absolute top-1/2 left-1/2 -translate-x-[82px]  -translate-y-1/2 z-30  transform rotate-0 transition-transform duration-500 ease-in-out group-hover:-rotate-[4deg]"/>
-                <Image src="/methode-1a.jpg" alt="Maquette 1" width={204} height={250.99} className="rounded-2xl absolute top-1/2   left-1/2 translate-x-[-200px] -translate-y-1/2 z-20  transform -rotate-0 transition-transform duration-500 ease-in-out group-hover:-rotate-[4deg]"/>
+            <div className="methode-card-mobile border border-gray-200/80 rounded-[32px] w-full max-w-[534px] h-[480px] mx-auto flex flex-col p-8 group">
+              <div className="methode-grid-mobile relative w-[470px] h-[332px] mx-auto [mask-image:linear-gradient(to_bottom,black_50%,transparent_100%)]">
+                <Image src="/methode-1c.jpg" alt="Maquette 3" width={204} height={250.99} className="methode-image-mobile methode-image-2  rounded-2xl absolute top-1/2 left-1/2 -translate-x-[-20px] -translate-y-1/2 z-40  transform rotate-3 transition-transform duration-500 ease-in-out group-hover:rotate-[8deg] "/>
+                <Image src="/methode-1b.jpg" alt="Maquette 2" width={190} height={250.99} className="methode-image-mobile rounded-2xl absolute top-1/2 left-1/2 -translate-x-[82px]  -translate-y-1/2 z-30  transform rotate-0 transition-transform duration-500 ease-in-out group-hover:-rotate-[4deg]"/>
+                <Image src="/methode-1a.jpg" alt="Maquette 1" width={204} height={250.99} className="methode-image-mobile methode-image-1 rounded-2xl absolute top-1/2   left-1/2 translate-x-[-200px] -translate-y-1/2 z-20  transform -rotate-0 transition-transform duration-500 ease-in-out group-hover:-rotate-[4deg]"/>
               </div>
               <div className="flex-1 flex flex-col justify-center  text-left">
                 <h3 className="text-lg  font-normal tracking-tight text-black">1 - Premier rendez-vous.</h3>
@@ -874,25 +936,25 @@ export default function Home() {
             </div>
 
             {/* --- CARTE 2 --- */}
-            <div className="border border-gray-200/80 rounded-[32px] w-full max-w-[534px] h-[480px] mx-auto flex flex-col p-8 group">
-      <div className="relative w-[470px] h-[352px] mx-auto flex items-center justify-center pt-12 [mask-image:linear-gradient(to_bottom,black_50%,transparent_100%)]">
+            <div className="methode-card-mobile border border-gray-200/80 rounded-[32px] w-full max-w-[534px] h-[480px] mx-auto flex flex-col p-8 group">
+      <div className=" methodes-grid-mobile relative w-[470px] h-[352px]  mx-auto flex items-center justify-center pt-12 [mask-image:linear-gradient(to_bottom,black_50%,transparent_100%)]">
         {/* Cercles */}
         
-        <div className="absolute w-[313px] h-[313px] rounded-full border-[5px] border-brand-blue/30 [mask-image:linear-gradient(to_bottom,black_50%,transparent_100%)] transition-all duration-500 ease-in group-hover:scale-110 group-hover:w-[350px] group-hover:h-[350px] group-hover:border-[4px] "></div>
-        <div className="absolute w-[251px] h-[251px] rounded-full border-[6px] border-brand-blue/60 [mask-image:linear-gradient(to_bottom,black_50%,transparent_100%)]  transition-all duration-500 ease-in group-hover:scale-110 group-hover:w-[290px] group-hover:h-[290px] group-hover:border-[5px]"></div>
+        <div className="absolute w-[313px] h-[313px] rounded-full border-[5px] border-brand-blue/30 [mask-image:linear-gradient(to_bottom,black_50%,transparent_100%)] transition-all duration-500 ease-in group-hover:scale-110   group-hover:w-[350px] group-hover:h-[350px] group-hover:border-[4px] "></div>
+        <div className="absolute w-[251px] h-[251px] rounded-full border-[6px] border-brand-blue/60 [mask-image:linear-gradient(to_bottom,black_50%,transparent_100%)]  transition-all duration-500 ease-in group-hover:scale-110     group-hover:w-[290px] group-hover:h-[290px] group-hover:border-[5px]"></div>
         
-        <div className="absolute w-0 h-0 rounded-full border-[7px] border-brand-blue/65 [mask-image:linear-gradient(to_bottom,black_50%,transparent_100%)]   transition-all duration-500 ease-out group-hover:w-[230px] group-hover:h-[230px] group-hover:opacity-100 group-hover:scale-110 opacity-0"></div> 
+        <div className=" absolute w-0 h-0 rounded-full border-[7px] border-brand-blue/65 [mask-image:linear-gradient(to_bottom,black_50%,transparent_100%)]   transition-all duration-500 ease-out group-hover:w-[230px] group-hover:h-[230px] group-hover:opacity-100 group-hover:scale-110 opacity-0"></div> 
 
         {/* Image centrale */}
-        <Image src="/methode-2-center.jpg" alt="Avatar central" width={190} height={190} className="rounded-full  [mask-image:linear-gradient(to_bottom,black_50%,transparent_100%)]transition-transform duration-500 ease-out group-hover:scale-110 relative z-10 "/>
+        <Image src="/methode-2-center.jpg" alt="Avatar central" width={190} height={190} className="rounded-full  [mask-image:linear-gradient(to_bottom,black_50%,transparent_100%)]transition-transform duration-500 ease-out  group-hover:scale-110   relative z-10 "/>
         
         {/* Avatars positionnés en arc sur le cercle extérieur */}
         <div className="absolute w-[313px] h-[313px]">
-          <Image src="/methode-2-av5.jpg" alt="Avatar 5" width={62} height={62} className="rounded-full border-4 border-brand-blue absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2  transition-all duration-500 ease-out group-hover:scale-110 group-hover:translate-x-[50px] group-hover:translate-y-[1px]"/>
-          <Image src="/methode-2-av4.jpg" alt="Avatar 4" width={62} height={62} className="rounded-full border-4 border-brand-blue absolute top-[15%] right-[15%] translate-x-1/2 -translate-y-1/2 ransition-all duration-500 ease-out group-hover:scale-110 group-hover:translate-x-[65px] group-hover:translate-y-[1px]"/>
-          <Image src="/methode-2-av3.jpg" alt="Avatar 3" width={62} height={62} className="rounded-full border-4 border-brand-blue absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ease-out group-hover:scale-110 "/>
-          <Image src="/methode-2-av2.jpg" alt="Avatar 2" width={62} height={62} className="rounded-full border-4 border-brand-blue absolute top-[15%] left-[15%] -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ease-out group-hover:scale-110 group-hover:-translate-x-[65px] group-hover:translate-y-[1px]"/>
-          <Image src="/methode-2-av1.jpg" alt="Avatar 1" width={62} height={62} className="rounded-full border-4 border-brand-blue absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ease-out group-hover:scale-110 group-hover:-translate-x-[50px] group-hover:translate-y-[1px]"/>
+          <Image src="/methode-2-av5.jpg" alt="Avatar 5" width={62} height={62} className="methodes rounded-full border-4 border-brand-blue absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2  transition-all duration-500 ease-out group-hover:scale-110  group-hover:translate-x-[50px]  group-hover:translate-y-[1px]  "/>
+          <Image src="/methode-2-av4.jpg" alt="Avatar 4" width={62} height={62} className="methodes rounded-full border-4 border-brand-blue absolute top-[15%] right-[15%] translate-x-1/2 -translate-y-1/2 ransition-all duration-500 ease-out group-hover:scale-110   group-hover:translate-x-[65px] group-hover:translate-y-[1px]"/>
+          <Image src="/methode-2-av3.jpg" alt="Avatar 3" width={62} height={62} className="methodes rounded-full border-4 border-brand-blue absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2  transition-all duration-500 ease-out group-hover:scale-110   "/>
+          <Image src="/methode-2-av2.jpg" alt="Avatar 2" width={62} height={62} className="methodes rounded-full border-4 border-brand-blue absolute top-[15%] left-[15%] -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ease-out group-hover:scale-110   group-hover:-translate-x-[65px] group-hover:translate-y-[1px]"/>
+          <Image src="/methode-2-av1.jpg" alt="Avatar 1" width={62} height={62} className="methodes rounded-full border-4 border-brand-blue absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ease-out group-hover:scale-110  group-hover:-translate-x-[50px] group-hover:translate-y-[1px]"/>
         </div>
       </div>
       <div className="flex-1 flex flex-col justify-end text-left pt-4 -mt-10">
@@ -968,7 +1030,7 @@ export default function Home() {
         
         <section id="avis" className="bg-white py-28 overflow-hidden">
   <div className="container mx-auto px-6 text-center">
-    <h2 className="text-[40px] font-semibold leading-[40px] tracking-[-0.2px] text-black">
+    <h2 className="mon-titre text-[40px] font-semibold leading-[40px] tracking-[-0.2px] text-black">
       Avis de nos clients.
     </h2>
     <p className="mt-4 text-[13.95px] leading-[21px] tracking-[-0.5px] text-black/50 max-w-2xl mx-auto">
@@ -988,8 +1050,8 @@ export default function Home() {
   </div>
   
   {/* Carrousel 2: Gauche vers Droite */}
-  <div className="relative mt-8 w-full [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
-    <div className="flex w-max animate-scroll-reverse">
+  <div className="relative mt-8 w-full  [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
+    <div className="flex w-max  animate-scroll-reverse">
       {[...testimonialsRow2,...testimonialsRow2, ...testimonialsRow2, ...testimonialsRow2, ...testimonialsRow2, ...testimonialsRow2, ...testimonialsRow2].map((review, index) => (
         <div key={index} className="flex-none mx-4">
           <TestimonialCard  review={review}/>
@@ -1007,7 +1069,7 @@ export default function Home() {
 
 <section id="realisations" className=" py-16">
           <div className="container mx-auto px-6 text-center">
-            <h2 className="text-[39.84px] font-semibold leading-tight tracking-tight text-black">
+            <h2 className="mon-titre text-[39.84px] font-semibold leading-tight tracking-tight text-black">
               Nos articles et conseils.
             </h2>
             <p className="mt-4 text-[14.18px] leading-6 tracking-tight text-black/50 max-w-2xl mx-auto">
