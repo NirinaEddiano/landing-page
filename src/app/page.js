@@ -935,7 +935,7 @@ useEffect(() => {
         <LogoCarousel />
 
 
-        <section id="services" className="relative bg-white pt-16 pb-8">
+         <section id="services" className="relative z-9 bg-white pt-16  ">
             <div  ref={titleRef} className="services-sticky-title container mx-auto px-6 text-center py-8 sticky top-[72px] z-20 bg-white/80 backdrop-blur-sm">
                 <h2 className="mon-titre font-semibold text-[39.22px] leading-[40px] tracking-[-0.2px] text-black">
                     Découvrez nos services.
@@ -994,7 +994,7 @@ useEffect(() => {
         
         {/* ... Répétez pt-20 pour les autres sections ... */}
         
-        <section id="methode" className="bg-white py-8 ">
+        < <section id="methode" className="bg-white py-8 mt-[-140px] relative z-200">
           <div className="container mx-auto px-6 text-center">
             <h2 className="mon-titre text-4xl font-semibold tracking-tight text-black">
               Notre méthode de travail.
