@@ -181,11 +181,11 @@ const testimonialsRow2 = [
 
 
 const TestimonialCard = ({ review }) => (
-  <div className="TestimonialCard flex-none bg-white border border-gray-200 rounded-2xl shadow-sm w-[401px] h-[350px] p-6 flex flex-col justify-between ">
+  <div className="TestimonialCard flex-none bg-[#FAFAFA] border border-gray-200 rounded-2xl shadow-sm w-[401px] h-[300px] p-6 flex flex-col justify-between ">
     <div className="flex">
       {[...Array(review.stars)].map((_, i) => <StarIcon key={i} className="w-5 h-5 text-yellow-400" />)}
     </div>
-    <p className="text-left text-sm leading-7 tracking-tight text-black flex-grow mt-4">
+    <p className="text-left text-xs leading-7 tracking-tight text-black flex-grow mt-4">
       {review.text}
     </p>
     <div className="flex items-center justify-between mt-6">
@@ -469,7 +469,7 @@ const FaqSection = () => {
         </p>
       </div>
       
-      <div className="faqs container mx-auto px-6 mt-16 max-w-5xl">
+      <div className="container mx-auto px-6 mt-16 max-w-5xl">
         {faqData.map((item, index) => (
           <FaqItem 
             key={index} 
@@ -669,9 +669,15 @@ const Footer = () => {
   );
 };
 
+
 export default function Home() {
+  
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const titleRef = useRef(null);
+  const cardsContainerRef = useRef(null);
+  const lastCardRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -679,7 +685,7 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navTextClass = isScrolled ? 'text-black' : 'text-white';
+  const navTextClass = isScrolled ? 'text-white' : 'text-black';
 
   const MobileMenu = ({ isOpen, setIsOpen }) => {
     const handleLinkClick = () => setIsOpen(false);
@@ -716,40 +722,114 @@ useEffect(() => {
   return () => window.removeEventListener('scroll', handleScroll);
 }, []);
 
+ const heroSectionRef = useRef(null);
+
+ useEffect(() => {
+    const handleScroll = () => {
+      // 2. Vérifier si la référence est définie
+      if (heroSectionRef.current) {
+        // 3. Comparer la position de scroll à la hauteur de la section d'accueil
+        // Le changement s'active quand le scroll dépasse la hauteur de la section, moins la hauteur de la nav (72px)
+        const heroHeight = heroSectionRef.current.offsetHeight;
+        const navHeight = 72;
+        setIsScrolled(window.scrollY > heroHeight - navHeight);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+
+  useEffect(() => {
+    const handleServicesScroll = () => {
+      // On s'assure que les éléments sont bien présents sur la page
+      if (!titleRef.current || !lastCardRef.current || !cardsContainerRef.current) {
+        return;
+      }
+
+      const titleElement = titleRef.current;
+      const lastCardElement = lastCardRef.current;
+      const cardsContainerElement = cardsContainerRef.current;
+
+      const cardsContainerRect = cardsContainerElement.getBoundingClientRect();
+      
+      // On calcule la position finale du bas de la dernière carte lorsqu'elle est "sticky"
+      const lastCardStickyTop = 200 + (servicesData.length - 1) * 20; // 260px pour 4 cartes
+      const lastCardHeight = lastCardElement.offsetHeight;
+      const lastCardBottomFinalPos = lastCardStickyTop + lastCardHeight;
+
+      // On vérifie si le bas du conteneur des cartes est passé au-dessus de la position finale de la dernière carte.
+      // Si c'est le cas, cela signifie que le conteneur remonte et pousse les cartes vers le haut.
+      if (cardsContainerRect.bottom < lastCardBottomFinalPos) {
+        // On calcule de combien de pixels le conteneur a "dépassé"
+        const pushUpDistance = lastCardBottomFinalPos - cardsContainerRect.bottom;
+        
+        // On applique ce décalage au titre via une transformation CSS.
+        // Le titre va se déplacer vers le haut en même temps que les cartes.
+        titleElement.style.transform = `translateY(-${pushUpDistance}px)`;
+
+      } else {
+        // Sinon, on remet le titre à sa position initiale.
+        titleElement.style.transform = 'translateY(0px)';
+      }
+    };
+
+    window.addEventListener('scroll', handleServicesScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleServicesScroll);
+    };
+  }, []);
+
 
   return (
     <div className="bg-white text-black min-h-screen">
-      <nav className="fixed top-0 left-0 right-0 z-50 h-[72px] bg-white/20 backdrop-blur-sm ">
+      <nav className="fixed top-0 left-0 right-0 z-50 h-[72px] bg-white/0 backdrop-blur-sm ">
       <div className="container mx-auto px-6 h-full flex justify-between items-center">
           
-        <div className=" flex-shrink-0">   
-        <a 
-              href="#accueil" 
-              className={`font-['Mada']   transition-colors duration-300
-                ${isScrolled ? 'text-black' : 'text-white'}`}
-            >
-              <span className="mon-logo text-[21px] font-semibold leading-[65px] tracking-[-1.5px]">MUNTU</span>
-              <span className={`mon-logo font-xs text-[21px] ${isScrolled ? 'text-black/60' : 'text-white/60'}`}>LABS</span>
+      <div className="flex-shrink-0">   
+            <a href="#accueil">
+              {/* On affiche le logo noir si la page a défilé, sinon le logo blanc */}
+              {isScrolled ? (
+                <Image
+                  src="/logo-black.png" // Assurez-vous que ce fichier existe dans /public
+                  alt="MuntuLabs Logo"
+                  width={100} // Ajustez la largeur selon vos besoins
+                  height={40} // Ajustez la hauteur selon vos besoins
+                  className="transition-opacity duration-300"
+                  priority
+                />
+              ) : (
+                <Image
+                  src="/logo-white.png" // Assurez-vous que ce fichier existe dans /public
+                  alt="MuntuLabs Logo"
+                  width={90} // Mêmes dimensions pour éviter un saut de layout
+                  height={30} // Mêmes dimensions pour éviter un saut de layout
+                  className="transition-opacity duration-300"
+                  priority
+                />
+              )}
             </a>
           </div>
 
           <div className={`hidden lg:flex items-center space-x-8 font-medium ${navTextClass}`}>
-            <a href="#accueil" className="font-medium text-[14.41px] leading-[21px] tracking-[-0.5px] text-black hover:opacity-75 transition-opacity">
+            <a href="#accueil" className={`font-medium text-[14.41px] leading-[21px] tracking-[-0.5px] text-black hover:opacity-75 transition-opacity ${isScrolled ? 'text-black' : 'text-white'}`}>
               Accueil
             </a>
-            <a href="#services" className="font-medium text-[14.41px] leading-[21px] tracking-[-0.5px] text-black hover:opacity-75 transition-opacity">
+            <a href="#services" className={`font-medium text-[14.41px] leading-[21px] tracking-[-0.5px] text-black hover:opacity-75 transition-opacity ${isScrolled ? 'text-black' : 'text-white'}`}>
               Services
             </a>
-            <a href="#methode" className="font-medium text-[14.41px] leading-[21px] tracking-[-0.5px] text-black hover:opacity-75 transition-opacity">
+            <a href="#methode" className={`font-medium text-[14.41px] leading-[21px] tracking-[-0.5px] text-black hover:opacity-75 transition-opacity ${isScrolled ? 'text-black' : 'text-white'}`}>
               Méthode
             </a>
-            <a href="#avis" className="font-medium text-[14.41px] leading-[21px] tracking-[-0.5px] text-black hover:opacity-75 transition-opacity">
+            <a href="#avis" className={`font-medium text-[14.41px] leading-[21px] tracking-[-0.5px] text-black hover:opacity-75 transition-opacity ${isScrolled ? 'text-black' : 'text-white'}`}>
               Avis Clients
             </a>
-            <a href="#realisations" className="font-medium text-[14.41px] leading-[21px] tracking-[-0.5px] text-black hover:opacity-75 transition-opacity">
+            <a href="#realisations" className={`font-medium text-[14.41px] leading-[21px] tracking-[-0.5px] text-black hover:opacity-75 transition-opacity ${isScrolled ? 'text-black' : 'text-white'}`}>
               Réalisations
             </a>
-            <a href="#faq" className="font-medium text-[14.41px] leading-[21px] tracking-[-0.5px] text-black hover:opacity-75 transition-opacity">
+            <a href="#faq" className={`font-medium text-[14.41px] leading-[21px] tracking-[-0.5px] text-black hover:opacity-75 transition-opacity ${isScrolled ? 'text-black' : 'text-white'}`}>
               FAQ
             </a>
           </div>
@@ -777,7 +857,7 @@ useEffect(() => {
       </nav>
       <MobileMenu isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} />
       <main>
-      <section id="accueil" className="relative h-screen flex items-center justify-center">
+      <section ref={heroSectionRef} id="accueil" className="relative h-[650px] flex items-center justify-center">
           <div className="absolute inset-0 z-0 ">
             <Image
               src="/hero-background.jpg"
@@ -840,8 +920,10 @@ useEffect(() => {
             </p>
 
             <a 
-              href="#contact" 
-              className="bg-white/5 backdrop-blur-sm border border-white/20 text-white font-medium text-[14.41px] leading-[21px] tracking-[-0.5px] rounded-[7px] flex items-center justify-center w-[164.28px] h-[37px] gap-[10px] transform hover:scale-105 transition-transform duration-300 ease-out"
+              href="https://cal.com/muntulabs/booking-meets" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="bg-white/0 backdrop-blur-sm border border-white/20 text-white font-medium text-[14.41px] leading-[21px] tracking-[-0.5px] rounded-[7px] flex items-center justify-center w-[164.28px] h-[37px] gap-[10px] transform hover:scale-105 transition-transform duration-300 ease-out"
             >
               <ArrowUpRightIcon />
               <span>Réserver un appel</span>
@@ -852,8 +934,9 @@ useEffect(() => {
 
         <LogoCarousel />
 
-        <section id="services" className="relative bg-white pt-16 pb-28">
-            <div className="services-sticky-title container mx-auto px-6 text-center py-8 sticky top-[72px] z-20 bg-white/80 backdrop-blur-sm"> 
+
+        <section id="services" className="relative bg-white pt-16 pb-8">
+            <div  ref={titleRef} className="services-sticky-title container mx-auto px-6 text-center py-8 sticky top-[72px] z-20 bg-white/80 backdrop-blur-sm">
                 <h2 className="mon-titre font-semibold text-[39.22px] leading-[40px] tracking-[-0.2px] text-black">
                     Découvrez nos services.
                 </h2>
@@ -862,22 +945,25 @@ useEffect(() => {
                     convaincre et faire grandir votre activité.
                 </p>
             </div>
-            
-            <div className="services-container-mobile services-main-container relative z-40 container mx-auto" style={{ height: `${servicesData.length * 84}vh`, marginTop: '-24px' }}> 
+
+            <div ref={cardsContainerRef} className="services-container-mobile services-main-container relative z-40 container mx-auto" style={{ height: `${servicesData.length * 94}vh`, marginTop: '-24px' }}>
                 {servicesData.map((service, index) => (
-                    <div 
-                        key={index} 
-                        className="service-card-mobile services-sticky-card  lg:sticky lg:flex items-center justify-center w-full"
-                        style={{ top: `calc(200px + ${index * 0}px)` }}
+                    <div
+                        key={index}
+                        // LA MODIFICATION EST ICI : Ajout de la marge en bas (mb-64)
+                        // J'ai aussi ajouté un espacement en haut (mt-16) pour la première carte pour mieux la centrer au départ.
+                        ref={index === servicesData.length - 1 ? lastCardRef : null}
+                        className="service-card-mobile services-sticky-card lg:sticky lg:flex items-center justify-center w-full mb-64 first:mt-16"
+                        style={{ top: `calc(200px + ${index * 20}px)` }} // J'ai réduit un peu l'offset pour un empilement plus serré
                     >
-                        <div className="service-grid-mobile bg-white p-8 rounded-2xl shadow-2xl grid md:grid-cols-  lg:grid-cols-2  gap-12 items-center max-w-5xl w-full">
+                        <div className="service-grid-mobile bg-white p-8 rounded-2xl shadow-2xl grid md:grid-cols- lg:grid-cols-2 gap-12 items-center max-w-5xl w-full">
                             <div className="w-full ">
-                                <Image 
-                                    src={service.imageSrc} 
-                                    alt={service.title} 
-                                    width={512} 
-                                    height={426} 
-                                    className="service-image-mobile md:w-full rounded-[16px] object-cover w-[512px] h-[426px]"
+                                <Image
+                                    src={service.imageSrc}
+                                    alt={service.title}
+                                    width={592}
+                                    height={326}
+                                    className="service-image-mobile md:w-full rounded-[16px] object-cover w-[682px] h-[326px]"
                                 />
                             </div>
                             <div className="flex flex-col items-start text-left">
@@ -892,8 +978,8 @@ useEffect(() => {
                                         </li>
                                     ))}
                                 </ul>
-                                <a 
-                                    href="#contact" 
+                                <a
+                                    href="#contact"
                                     className="mt-8 bg-black text-white font-normal text-[13.83px] leading-[21px] tracking-[-0.5px] rounded-[7px] flex items-center justify-center gap-2 w-[126.88px] h-[37px] transform hover:scale-105 transition-transform duration-300 ease-out"
                                 >
                                     <PaperIcon />
@@ -908,7 +994,7 @@ useEffect(() => {
         
         {/* ... Répétez pt-20 pour les autres sections ... */}
         
-        <section id="methode" className="bg-gray-50 py-8 pt-[0px]">
+        <section id="methode" className="bg-white py-8 ">
           <div className="container mx-auto px-6 text-center">
             <h2 className="mon-titre text-4xl font-semibold tracking-tight text-black">
               Notre méthode de travail.
