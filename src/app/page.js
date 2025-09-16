@@ -994,7 +994,7 @@ useEffect(() => {
         
         {/* ... Répétez pt-20 pour les autres sections ... */}
         
-        < <section id="methode" className="bg-white py-8 mt-[-140px] relative z-200">
+        <section id="methode" className="bg-white py-8 mt-[-140px] relative z-200">
           <div className="container mx-auto px-6 text-center">
             <h2 className="mon-titre text-4xl font-semibold tracking-tight text-black">
               Notre méthode de travail.
