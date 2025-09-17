@@ -946,7 +946,7 @@ useEffect(() => {
                 </p>
             </div>
 
-            <div ref={cardsContainerRef} className="services-container-mobile services-main-container relative z-40 container mx-auto" style={{ height: `${servicesData.length * 97}vh`, marginTop: '-24px' }}>
+            <div ref={cardsContainerRef} className="services-container-mobile services-main-container relative z-40 container mx-auto" style={{ height: `${servicesData.length * 99}vh`, marginTop: '-24px' }}>
                 {servicesData.map((service, index) => (
                     <div
                         key={index}
