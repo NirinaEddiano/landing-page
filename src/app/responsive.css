@@ -30,6 +30,8 @@
     padding-left:80px;
   }
 
+  
+
   .carousel{
     width:100px;
   }
@@ -84,6 +86,10 @@
 @media (max-width: 820px) {
   .mon-titre{
     font-size: 34.41px;
+  }
+
+   .methodesone{
+    margin-top: 100px;
   }
 
   .TestimonialCard{
@@ -144,6 +150,10 @@
 
   .contacts{
     padding:26px;
+  }
+
+   .methodesone {
+    margin-top: 100px;
   }
 
   .mon-titre1{
@@ -258,3 +268,10 @@
   }
 }
 
+@media (max-width: 360px) {
+   .methodesone {
+    margin-top: 100px;
+  }
+}
+
+ 

@@ -44,7 +44,7 @@ const LogoCarousel = () => {
   ];
   return (
     <div className="bg-white w-full py-12">
-      <div className="relative w-full max-w-5xl sm:max-w-1xl mx-auto overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
+      <div className="relative w-full max-w-6xl sm:max-w-1xl mx-auto overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
         <div className="flex w-max animate-scroll">
           {[...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos, ...logos].map((logo, index) => (
             <div key={index} className="flex-none flex items-center justify-center mx-[22.5px]" style={{ width: `${logo.width}px`}}>
@@ -421,7 +421,7 @@ const FaqItem = ({ item, isOpen, onClick }) => {
         className="w-full flex justify-between items-center text-left py-6"
         onClick={onClick}
       >
-        <span className="text-[16.73px] leading-6 tracking-tight text-black">{item.question}</span>
+        <span className="text-[18.73px] leading-6 tracking-tight text-black">{item.question}</span>
         <span className="flex-shrink-0 w-[22px] h-[22px] rounded-full bg-black flex items-center justify-center">
           <ChevronDownIcons className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
         </span>
@@ -459,7 +459,7 @@ const FaqSection = () => {
   };
 
   return (
-    <section id="faq" className="bg-white py-28">
+    <section id="faq" className="bg-white py-20">
       <div className="container mx-auto px-6 text-center">
         <h2 className="mon-titre text-[39.22px] font-semibold leading-10 tracking-tight text-black">
           Questions fréquentes.
@@ -469,7 +469,7 @@ const FaqSection = () => {
         </p>
       </div>
       
-      <div className="container mx-auto px-6 mt-16 max-w-5xl">
+      <div className="container mx-auto px-6 mt-12 w-full">
         {faqData.map((item, index) => (
           <FaqItem 
             key={index} 
@@ -489,7 +489,7 @@ const FaqSection = () => {
   );
 };
 
-const CustomSelect = ({ label, options, placeholder }) => {
+const CustomSelect = ({ label, options, placeholder, className = '', icon }) => { // Ajout de la prop "icon"
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState(placeholder);
   const selectRef = useRef(null);
@@ -508,19 +508,23 @@ const CustomSelect = ({ label, options, placeholder }) => {
     setSelectedValue(value);
     setIsOpen(false);
   };
+  
   return (
     <div className="relative" ref={selectRef}>
-      <label className="block text-[14.53px] font-normal leading-6 tracking-tight text-black mb-2">{label}</label>
+      {/* MODIFIÉ : Le label est maintenant un flex container pour l'icône */}
+      <label className="flex items-center gap-2 text-[14.53px] font-normal leading-6 tracking-tight text-black mb-2">
+        {icon} {/* Affiche l'icône ici */}
+        {label}
+      </label>
       <button 
         type="button" 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full h-12 px-3 text-sm border border-gray-900/10 rounded-[10px] flex justify-between items-center text-left"
+        className={`w-full h-12 px-3 text-sm border border-gray-900/10 rounded-[10px] flex justify-between items-center text-left ${className}`}
       >
         <span className={selectedValue === placeholder ? "text-gray-400" : "text-black"}>{selectedValue}</span>
         <ChevronDownIcon className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
-      {/* Menu déroulant avec animation */}
       <div className={`absolute top-full left-0 w-full mt-1 bg-white border border-gray-200 rounded-[10px] shadow-lg z-10 transition-all duration-300 ease-in-out transform ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
         <div className="max-h-48 overflow-y-auto p-1">
           {options.map((option, index) => (
@@ -538,73 +542,104 @@ const CustomSelect = ({ label, options, placeholder }) => {
   );
 };
 
+const UserIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>;
+const BuildingIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>;
+const MapPinIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>;
+const LinkIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg>;
+const BriefcaseIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>;
+const EuroIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 10h12M4 14h12M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2.2 0 4.2-.9 5.7-2.3"></path></svg>;
+const EditIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>;
+const PhoneIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>;
+
+const SendIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>;
+
+
 const ContactForm = () => {
   return (
-    <section id="contact" className=" py-28">
+    <section id="contact" className="py-22  mb-28">
       <div className="container mx-auto px-6 text-center">
         <h2 className="mon-titre text-[39.22px] font-semibold leading-10 tracking-tight text-black">Demande de devis gratuit.</h2>
         <div className="mt-4 text-black/50 max-w-3xl mx-auto">
           <span className="text-[14.18px]">Remplissez le formulaire pour recevoir un devis gratuitement. </span>
-          <a href="mailto:votre.email@exemple.com" className="underline text-[13.71px]">Contactez-nous</a>
-          <span className="text-[15px]"> par email ou par </span>
-          <a href="tel:+33000000000" className="underline text-[15px]">téléphone</a>
+          <a href="mailto:votre.email@exemple.com" className="underline text-[13.71px] text-black">Contactez-nous</a>
+          <span className="text-[15px] "> par email ou par </span>
+          <a href="tel:+33000000000" className="underline text-[15px] text-black">téléphone</a>
           <span className="text-[14.06px]"> pour une réponse plus rapide (WhatsApp disponible).</span>
         </div>
       </div>
       
-      <div className="contacts container mx-auto mt-16 max-w-[865px]">
-        <form className=" bg-white rounded-2xl shadow-[0px_0px_6px_0px_rgba(0,0,0,0.25)] p-8">
+      {/* MODIFIÉ : Largeur du formulaire et centrage */}
+      <div className="contacts container mx-auto mt-16 max-w-[736px]">
+        <form className="bg-white rounded-2xl shadow-[0px_0px_6px_0px_rgba(0,0,0,0.25)] p-8">
+          
+          {/* MODIFIÉ : Retrait de w-[672px] pour un alignement flexible */}
           <div className="mb-6">
-            <label htmlFor="fullName" className="block text-[13.83px] font-normal leading-6 tracking-tight text-black mb-2">Nom complet</label>
-            <input type="text" id="fullName" placeholder="David Dupont" className="w-full h-12 px-3 text-sm border border-gray-900/10 rounded-[10px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-beige" />
+            {/* AJOUT : Icône et flexbox sur le label */}
+            <label htmlFor="fullName" className="flex items-center gap-2 text-[13.83px] font-normal leading-6 tracking-tight text-black mb-2">
+              <UserIcon /> Nom complet
+            </label>
+            <input type="text" id="fullName" placeholder="David Dupont" className="w-full bg-[#f5f5f5] h-12 px-3 text-sm border border-gray-900/10 rounded-[10px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-beige" />
           </div>
           
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label htmlFor="companyName" className="block text-[14.53px] font-normal leading-6 tracking-tight text-black mb-2">Raison Sociale</label>
-              <input type="text" id="companyName" placeholder="Exemple SA" className="w-full h-12 px-3 text-sm border border-gray-900/10 rounded-[10px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-beige" />
+              <label htmlFor="companyName" className="flex items-center gap-2 text-[14.53px] font-normal leading-6 tracking-tight text-black mb-2">
+                <BuildingIcon /> Raison Sociale
+              </label>
+              <input type="text" id="companyName" placeholder="Exemple SA" className="w-full bg-[#f5f5f5] h-12 px-3 text-sm border border-gray-900/10 rounded-[10px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-beige" />
             </div>
-            <CustomSelect label="Localisation" placeholder="Sélectionner" options={["France", "Belgique", "Pays-Bas", "International"]} />
+            {/* J'ai dû modifier CustomSelect pour qu'il accepte une icône */}
+            <CustomSelect label="Localisation" placeholder="Sélectionner" options={["France", "Belgique", "Pays-Bas", "International"]} className="bg-[#f5f5f5]" icon={<MapPinIcon />} />
           </div>
 
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label htmlFor="email" className="block text-[14.53px] font-normal leading-6 tracking-tight text-black mb-2">Email</label>
-              <input type="email" id="email" placeholder="exemple@entreprise.com" className="w-full h-12 px-3 text-sm border border-gray-900/10 rounded-[10px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-beige" />
+              <label htmlFor="email" className="flex items-center gap-2 text-[14.53px] font-normal leading-6 tracking-tight text-black mb-2">
+                <MailIcon /> Email
+              </label>
+              <input type="email" id="email" placeholder="exemple@entreprise.com" className="w-full bg-[#f5f5f5] h-12 px-3 text-sm border border-gray-900/10 rounded-[10px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-beige" />
             </div>
             <div>
-              <label htmlFor="phone" className="block text-[14.53px] font-normal leading-6 tracking-tight text-black mb-2">Téléphone</label>
-              <input type="tel" id="phone" placeholder="Entrez votre numéro" className="w-full h-12 px-3 text-sm border border-gray-900/10 rounded-[10px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-beige" />
+              <label htmlFor="phone" className="flex items-center gap-2 text-[14.53px] font-normal leading-6 tracking-tight text-black mb-2">
+                <PhoneIcon /> Téléphone
+              </label>
+              <input type="tel" id="phone" placeholder="Entrez votre numéro" className="w-full bg-[#f5f5f5] h-12 px-3 text-sm border border-gray-900/10 rounded-[10px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-beige" />
             </div>
           </div>
           
           <div className="grid md:grid-cols-2 gap-6 mb-6">
-            <CustomSelect label="Avez-vous un site internet ?" placeholder="Sélectionner" options={["Oui", "Non", "En projet"]} />
+            <CustomSelect label="Avez-vous un site internet ?" placeholder="Sélectionner" options={["Oui", "Non", "En projet"]} className="bg-[#f5f5f5]" icon={<LinkIcon />} />
             <div>
-              <label htmlFor="websiteLink" className="block text-[14.53px] font-normal leading-6 tracking-tight text-black mb-2">Lien de votre site internet (facultatif)</label>
-              <input type="url" id="websiteLink" placeholder="www.exemple.com" className="w-full h-12 px-3 text-sm border border-gray-900/10 rounded-[10px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-beige" />
+              <label htmlFor="websiteLink" className="flex items-center gap-2 text-[14.53px] font-normal leading-6 tracking-tight text-black mb-2">
+                <LinkIcon /> Lien de votre site (facultatif)
+              </label>
+              <input type="url" id="websiteLink" placeholder="www.exemple.com" className="w-full bg-[#f5f5f5] h-12 px-3 text-sm border border-gray-900/10 rounded-[10px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-beige" />
             </div>
           </div>
           
           <div className="grid md:grid-cols-2 gap-6 mb-6">
-            <CustomSelect label="Service(s) souhaité(s)" placeholder="Sélectionner" options={["Création de site internet", "Automatisation & IA", "Application mobile", "Closing & Prospection"]} />
-            <CustomSelect label="Budget" placeholder="Sélectionner" options={["Moins de 3000€", "3000€ - 5000€", "5000€ - 10000€", "Plus de 10000€"]} />
+            <CustomSelect label="Service(s) souhaité(s)" placeholder="Sélectionner" options={["Création de site internet", "Automatisation & IA", "Application mobile", "Closing & Prospection"]} className="bg-[#f5f5f5]" icon={<BriefcaseIcon />} />
+            <CustomSelect label="Budget" placeholder="Sélectionner" options={["Moins de 3000€", "3000€ - 5000€", "5000€ - 10000€", "Plus de 10000€"]} className="bg-[#f5f5f5]" icon={<EuroIcon />} />
           </div>
           
           <div className="mb-6">
-            <label htmlFor="message" className="block text-[13.83px] font-normal leading-6 tracking-tight text-black mb-2">Message</label>
-            <textarea id="message" placeholder="Parlez-nous de votre projet avec le plus de détails possible..." rows="4" className="w-full p-3 text-sm border border-gray-900/10 rounded-[10px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-beige"></textarea>
+            <label htmlFor="message" className="flex items-center gap-2 text-[13.83px] font-normal leading-6 tracking-tight text-black mb-2">
+              <EditIcon /> Message
+            </label>
+            <textarea id="message" placeholder="Parlez-nous de votre projet avec le plus de détails possible..." rows="4" className="w-full bg-[#f5f5f5] p-3 text-sm border border-gray-900/10 rounded-[10px] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-beige"></textarea>
           </div>
           
-          {/* Checkbox confidentialité - CORRIGÉ */}
           <div className="flex items-center justify-center mb-6">
-            <input type="checkbox" id="confidentiality" className="h-4 w-4 rounded border-gray-300 text-brand-beige focus:ring-brand-beige" />
-            <label htmlFor="confidentiality" className="ml-2 block text-[11.06px] tracking-tight text-black/70">Vos informations sont 100% confidentielles. Aucun engagement.</label>
+            {/* ... votre checkbox personnalisée ... */}
           </div>
           
-          <button type="submit" className="w-full h-12 bg-black text-white text-[11.44px] font-normal leading-4 tracking-tight rounded-[7px] hover:bg-gray-800 transition-colors duration-300">
-            Envoyer ma demande
-          </button>
+          <div className="flex items-center justify-center">
+            {/* MODIFIÉ : Bouton avec icône et alignement */}
+            <button type="submit" className="w-full h-12 bg-black text-white text-[11.44px] font-normal leading-4 tracking-tight rounded-[7px] hover:bg-gray-800 transition-colors duration-300 flex items-center justify-center gap-2">
+              <SendIcon />
+              <span>Envoyer ma demande</span>
+            </button>
+          </div>
         </form>
       </div>
     </section>
@@ -613,14 +648,21 @@ const ContactForm = () => {
 
 const Footer = () => {
   return (
-    <footer className="bg-white border-t border-gray-200">
-      <div className="container mx-auto px-6 lg:px-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 py-16">
+    <footer className="bg-white  border-t border-gray-200">
+      <div className="container mx-auto px-4 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 py-12">
           
           {/* --- PARTIE GAUCHE --- */}
           <div className="lg:col-span-1 flex flex-col items-center md:items-start text-center md:text-left">
-            <a href="#accueil" className="font-['Mada'] text-[21px] font-semibold leading-[65px] tracking-[-1.5px] text-black">
-              MUNTU<span className="font-light text-[21px] text-black/60">LABS</span>
+            <a href="#accueil">
+               <Image
+                  src="/logo-black.png" // Assurez-vous que ce fichier existe dans /public
+                  alt="MuntuLabs Logo"
+                  width={110} // Ajustez la largeur selon vos besoins
+                  height={42} // Ajustez la hauteur selon vos besoins
+                  className="transition-opacity duration-300"
+                  priority
+                />
             </a>
             <p className="mt-2 text-[14.18px] leading-[21px] tracking-tight text-black max-w-xs">
               Solutions digitales 360° : création de sites internet, apps mobiles, automatisations intelligentes et services de closing B2B.
@@ -638,7 +680,7 @@ const Footer = () => {
               {/* Colonne Contact */}
               <div className="space-y-3">
                 <h3 className="font-medium text-[17px] leading-6 tracking-tight text-black">Contact général</h3>
-                <div className="space-y-1">
+                <div className="space-y-1 items-center justify-center ">
                   <p><a href="tel:+33756938435" className="text-[13.95px] leading-6 tracking-tight text-black hover:underline">+33 7 56 93 84 35</a></p>
                   <p><a href="mailto:contact@muntulabs.com" className="text-[13.83px] leading-6 tracking-tight text-black hover:underline">contact@muntulabs.com</a></p>
                   <p><a href="#" className="text-[14.06px] leading-6 tracking-tight text-black hover:underline">Mentions légales</a></p>
@@ -648,7 +690,7 @@ const Footer = () => {
               {/* Colonne Présence */}
               <div className="space-y-3">
                 <h3 className="font-medium text-[17px] leading-6 tracking-tight text-black">Présence en Europe</h3>
-                <div className="space-y-1">
+                <div className="space-y-1 items-center justify-center ">
                   <p className="flex items-center gap-2 text-[13.95px] leading-6 tracking-tight text-black">France  <FranceFlagIcon /></p>
                   <p className="flex items-center gap-2 text-[13.83px] leading-6 tracking-tight text-black">Belgique <BelgiumFlagIcon /></p>
                   <p className="flex items-center gap-2 text-[14.06px] leading-6 tracking-tight text-black">Pays-Bas <NetherlandsFlagIcon /></p>
@@ -690,7 +732,7 @@ export default function Home() {
   const MobileMenu = ({ isOpen, setIsOpen }) => {
     const handleLinkClick = () => setIsOpen(false);
     return (
-      <div onClick={() => setIsOpen(false)} className={`fixed inset-0 z-40 transition-opacity duration-300 lg:hidden ${isOpen ? 'opacity-100 bg-black/30' : 'opacity-0 pointer-events-none'}`}>
+      <div onClick={() => setIsOpen(false)} className={`fixed inset-0 z-50 transition-opacity duration-300 lg:hidden ${isOpen ? 'opacity-100 bg-black/30' : 'opacity-0 pointer-events-none'}`}>
         <div onClick={(e) => e.stopPropagation()} className={`absolute left-0 w-full bg-white/20 backdrop-blur-xl   shadow-xl rounded-b-2xl transition-all duration-500 ease-in-out ${isOpen ? 'top-[70px] opacity-100' : '-top-full opacity-0'}`}>
           <div className="flex flex-col items-center space-y-6 p-8 text-lg font-medium text-white">
             <a href="#accueil" onClick={handleLinkClick} className="hover:text-brand-beige">Accueil</a>
@@ -706,13 +748,19 @@ export default function Home() {
   };
 
 
-  const BurgerIcon = ({ isOpen }) => (
-  <div className="w-5 h-5 relative">
-    <span className={`block w-full h-0.5 bg-black rounded-full absolute transition-all duration-300 ease-in-out ${isOpen ? 'rotate-45 top-1/2 -translate-y-1/2' : 'top-1'}`}></span>
-    <span className={`block w-full h-0.5 bg-black rounded-full absolute top-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out ${isOpen ? 'opacity-0' : 'opacity-100'}`}></span>
-    <span className={`block w-full h-0.5 bg-black rounded-full absolute transition-all duration-300 ease-in-out ${isOpen ? '-rotate-45 top-1/2 -translate-y-1/2' : 'bottom-1'}`}></span>
-  </div>
-);
+
+const BurgerIcon = ({ isOpen, isScrolled }) => {
+  // Détermine la couleur en fonction de l'état de défilement
+  const barColor = isScrolled ? 'bg-black' : 'bg-white';
+
+  return (
+    <div className="w-5 h-5 relative">
+      <span className={`block w-full h-0.5 ${barColor} rounded-full absolute transition-all duration-300 ease-in-out ${isOpen ? 'rotate-45 top-1/2 -translate-y-1/2' : 'top-1'}`}></span>
+      <span className={`block w-full h-0.5 ${barColor} rounded-full absolute top-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out ${isOpen ? 'opacity-0' : 'opacity-100'}`}></span>
+      <span className={`block w-full h-0.5 ${barColor} rounded-full absolute transition-all duration-300 ease-in-out ${isOpen ? '-rotate-45 top-1/2 -translate-y-1/2' : 'bottom-1'}`}></span>
+    </div>
+  );
+};
 
 
 
@@ -785,8 +833,14 @@ useEffect(() => {
 
   return (
     <div className="bg-white text-black min-h-screen">
-      <nav className="fixed top-0 left-0 right-0 z-50 h-[72px] bg-white/0 backdrop-blur-sm ">
-      <div className="container mx-auto px-6 h-full flex justify-between items-center">
+      <nav className={`
+    fixed top-0 left-0 right-0 z-50 h-[70px] 
+    bg-white/0 backdrop-blur-lg 
+    border-b 
+    transition-colors duration-300 ease-in-out 
+    ${isScrolled ? 'border-gray-200' : 'border-[#545455]'}
+`}>
+      <div className="container mx-auto px-6 h-full flex justify-between items-center  ">
           
       <div className="flex-shrink-0">   
             <a href="#accueil">
@@ -834,24 +888,30 @@ useEffect(() => {
             </a>
           </div>
 
-          <div className="mon-bouton flex-shrink-0">
-            <a 
-              href="#contact" 
-              className="mon-bouton-devis  bg-black text-white font-medium text-sm leading-[21px] tracking-[-0.5px] rounded-[7px] flex items-center justify-center  gap-2 py-3 px-6 md:text-sm sm:py-2 sm:px-4 md:rounded-[7px]  transform hover:scale-105 transition-transform duration-300 ease-out"
-            >
-              <PaperIcon />
-              <span>Devis Gratuit</span>
-            </a>
-          </div>
+           <div className="flex items-center gap-3">
+                
+                {/* Bouton Devis Gratuit */}
+                <div className="mon-bouton flex-shrink-0">
+                    <a 
+                        href="#contact" 
+                        className={`mon-bouton-devis bg-black backdrop-blur-sm border text-white font-medium text-[14.41px] leading-[21px] tracking-[-0.5px] rounded-[7px] flex items-center justify-center gap-2 py-3 px-6 md:text-sm sm:py-2 sm:px-4 md:rounded-[7px] transform hover:scale-105 transition-transform duration-300 ease-out ${isScrolled ? 'bg-black border-white/20' : 'bg-white/0 border-white/20'}`}
+                    >
+                        <PaperIcon />
+                        <span>Devis Gratuit</span>
+                    </a>
+                </div>
 
-          <div className="lg:hidden flex items-center gap-3">
-          <button 
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="w-8 h-8 rounded-[7px] border border-black/10 flex items-center justify-center bg-transparent"
-          >
-            <BurgerIcon isOpen={isMenuOpen} />
-          </button>
-        </div>
+                {/* Bouton Burger (uniquement sur mobile) */}
+                <div className="lg:hidden">
+                    <button 
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        className={`w-8 h-8 rounded-[7px] border flex items-center justify-center bg-transparent transition-colors duration-300 ${isScrolled ? 'border-black/10' : 'border-white/20'}`}
+                    >
+                        <BurgerIcon isOpen={isMenuOpen} isScrolled={isScrolled} />
+                    </button>
+                </div>
+
+            </div>
         </div>
         
       </nav>
@@ -935,35 +995,35 @@ useEffect(() => {
         <LogoCarousel />
 
 
-         <section id="services" className="relative z-9 bg-white pt-16  ">
+         <section id="services" className="relative z-9 bg-white pt-4  ">
             <div  ref={titleRef} className="services-sticky-title container mx-auto px-6 text-center py-8 sticky top-[72px] z-20 bg-white/80 backdrop-blur-sm">
                 <h2 className="mon-titre font-semibold text-[39.22px] leading-[40px] tracking-[-0.2px] text-black">
                     Découvrez nos services.
                 </h2>
-                <p className="mt-4 font-normal text-[13.95px] leading-[21px] tracking-[-0.5px] text-neutral-600 max-w-2xl mx-auto">
+                <p className="mt-4 font-normalmt-[-30px] re text-[13.95px] leading-[21px] tracking-[-0.5px] text-neutral-600 max-w-2xl mx-auto">
                     Des solutions digitales élégantes et performantes, créées pour attirer,<br/>
                     convaincre et faire grandir votre activité.
                 </p>
             </div>
 
-            <div ref={cardsContainerRef} className="services-container-mobile services-main-container relative z-40 container mx-auto" style={{ height: `${servicesData.length * 99}vh`, marginTop: '-24px' }}>
+            <div ref={cardsContainerRef} className="services-container-mobile services-main-container relative z-40 container mx-auto" style={{ height: `${servicesData.length * 100}vh`, marginTop: '0px' }}>
                 {servicesData.map((service, index) => (
                     <div
                         key={index}
                         // LA MODIFICATION EST ICI : Ajout de la marge en bas (mb-64)
                         // J'ai aussi ajouté un espacement en haut (mt-16) pour la première carte pour mieux la centrer au départ.
                         ref={index === servicesData.length - 1 ? lastCardRef : null}
-                        className="service-card-mobile services-sticky-card lg:sticky lg:flex items-center justify-center w-full mb-64 first:mt-16"
-                        style={{ top: `calc(200px + ${index * 20}px)` }} // J'ai réduit un peu l'offset pour un empilement plus serré
+                        className="service-card-mobile services-sticky-card lg:sticky lg:flex items-center justify-center w-full mb-40 first:mt-0"
+                        style={{ top: `calc(220px + ${index * 0}px)` }} // J'ai réduit un peu l'offset pour un empilement plus serré
                     >
-                        <div className="service-grid-mobile bg-white p-8 rounded-2xl shadow-2xl grid md:grid-cols- lg:grid-cols-2 gap-12 items-center max-w-5xl w-full">
+                        <div className="service-grid-mobile bg-white p-4 rounded-2xl shadow-2xl grid md:grid-cols- lg:grid-cols-2 gap-12 items-center max-w-6xl  w-full ">
                             <div className="w-full ">
                                 <Image
                                     src={service.imageSrc}
                                     alt={service.title}
-                                    width={592}
-                                    height={326}
-                                    className="service-image-mobile md:w-full rounded-[16px] object-cover w-[682px] h-[326px]"
+                                    width={520}
+                                    height={354.5}
+                                    className="service-image-mobile md:w-full rounded-[16px] object-cover w-[520px] h-[354.5px]"
                                 />
                             </div>
                             <div className="flex flex-col items-start text-left">
@@ -994,7 +1054,7 @@ useEffect(() => {
         
         {/* ... Répétez pt-20 pour les autres sections ... */}
         
-        <section id="methode" className="bg-white py-8 mt-[-140px] relative z-200">
+        <section id="methode" className="methodesone bg-white py-0 mt-[-10px] relative z-200">
           <div className="container mx-auto px-6 text-center">
             <h2 className="mon-titre text-4xl font-semibold tracking-tight text-black">
               Notre méthode de travail.
