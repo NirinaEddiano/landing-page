@@ -688,14 +688,22 @@ const Footer = () => {
               </div>
 
               {/* Colonne Présence */}
-              <div className="space-y-3">
-                <h3 className="font-medium text-[17px] leading-6 tracking-tight text-black">Présence en Europe</h3>
-                <div className="space-y-1 items-center justify-center ">
-                  <p className="flex items-center gap-2 text-[13.95px] leading-6 tracking-tight text-black">France  <FranceFlagIcon /></p>
-                  <p className="flex items-center gap-2 text-[13.83px] leading-6 tracking-tight text-black">Belgique <BelgiumFlagIcon /></p>
-                  <p className="flex items-center gap-2 text-[14.06px] leading-6 tracking-tight text-black">Pays-Bas <NetherlandsFlagIcon /></p>
-                </div>
-              </div>
+              <div class="space-y-3 flex flex-col items-center">
+  <h3 class="font-medium text-[17px] leading-6 tracking-tight text-black">
+    Présence en Europe
+  </h3>
+  <div class="space-y-1">
+    <p class="flex items-center gap-2 text-[13.95px] leading-6 tracking-tight text-black">
+      France <FranceFlagIcon />
+    </p>
+    <p class="flex items-center gap-2 text-[13.83px] leading-6 tracking-tight text-black">
+      Belgique <BelgiumFlagIcon />
+    </p>
+    <p class="flex items-center gap-2 text-[14.06px] leading-6 tracking-tight text-black">
+      Pays-Bas <NetherlandsFlagIcon />
+    </p>
+  </div>
+</div>
             </div>
           </div>
         </div>
@@ -838,7 +846,7 @@ useEffect(() => {
     bg-white/0 backdrop-blur-lg 
     border-b 
     transition-colors duration-300 ease-in-out 
-    ${isScrolled ? 'border-gray-200' : 'border-[#545455]'}
+    ${isScrolled ? 'border-black/10' : 'border-[#545455]'}
 `}>
       <div className="container mx-auto px-6 h-full flex justify-between items-center  ">
           
