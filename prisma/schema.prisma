@@ -1,8 +1,8 @@
 datasource db {
   provider     = "postgresql"
   // Utilise les variables créées par l'intégration Vercel + Supabase
-  url          = env("POSTGRES_PRISMA_URL")
-  directUrl    = env("POSTGRES_URL_NON_POOLING")
+  url          = env("DATABASE_URL")
+  directUrl    = env("DIRECT_URL")
   relationMode = "prisma"
 }
 
