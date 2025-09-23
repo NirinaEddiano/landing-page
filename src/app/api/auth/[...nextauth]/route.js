@@ -5,7 +5,7 @@ import { compare } from 'bcrypt';
 
 const prisma = new PrismaClient();
 
-export const authOptions = {
+const authOptions = { // On garde cette constante, mais on ne l'exporte plus
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -14,13 +14,11 @@ export const authOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        // ... (cette partie ne change pas)
         if (!credentials?.username || !credentials?.password) return null;
         const admin = await prisma.admin.findUnique({ where: { username: credentials.username } });
         if (!admin) return null;
         const isValidPassword = await compare(credentials.password, admin.password);
         if (!isValidPassword) return null;
-        // On retourne bien l'id et le username
         return { id: admin.id, username: admin.username };
       }
     })
@@ -28,12 +26,8 @@ export const authOptions = {
   session: {
     strategy: "jwt",
   },
-  // ==========================================================
-  // AJOUT DE CETTE SECTION "CALLBACKS"
-  // ==========================================================
   callbacks: {
     async jwt({ token, user }) {
-      // Si on a un objet "user" (au moment de la connexion), on l'ajoute au token
       if (user) {
         token.id = user.id;
         token.username = user.username;
@@ -41,7 +35,6 @@ export const authOptions = {
       return token;
     },
     async session({ session, token }) {
-      // On ajoute les informations du token à la session
       if (token) {
         session.user.id = token.id;
         session.user.username = token.username;
@@ -49,7 +42,6 @@ export const authOptions = {
       return session;
     },
   },
-  // ==========================================================
   pages: {
     signIn: '/login',
   },
@@ -58,4 +50,5 @@ export const authOptions = {
 
 const handler = NextAuth(authOptions);
 
+// C'EST LA CORRECTION : On exporte le handler en tant que GET et POST
 export { handler as GET, handler as POST };
