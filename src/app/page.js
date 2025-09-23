@@ -3,6 +3,9 @@ import { useState, useEffect,useRef } from 'react';
 import Image from "next/image";
 import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback } from 'react';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 const InstagramIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>;
 const LinkedinIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>;
@@ -212,31 +215,43 @@ const realisationsData = [
 ];
 
 
-const RealisationsCarousel = () => {
-  // Hook pour détecter si on est sur un écran mobile
-  const [isMobile, setIsMobile] = useState(false);
+const RealisationsCarousel = async () => {
+  const posts = await prisma.post.findMany({
+    where: { published: true },
+    orderBy: { createdAt: 'desc' },
+    take: 7,
+  });
 
+  if (!posts || posts.length === 0) {
+    return (
+      <div className="container mx-auto mt-10 text-center text-black/50">
+        Aucun article à afficher pour le moment.
+      </div>
+    );
+  }
+
+  return <RealisationsCarouselClient posts={posts} />;
+};
+
+// AJOUTEZ CE NOUVEAU COMPOSANT CLIENT DANS LE MÊME FICHIER
+const RealisationsCarouselClient = ({ posts }) => {
+  const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024); // 768px est le point de rupture 'md' de Tailwind
-    };
-    checkMobile(); // Vérifier au chargement initial
-    window.addEventListener('resize', checkMobile); // Vérifier lors du redimensionnement
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Configuration dynamique du carrousel
   const [emblaRef, emblaApi] = useEmblaCarousel({ 
     loop: true, 
-    align: isMobile ? 'center' : 'start', // Centrer sur mobile, aligner à gauche sur desktop
-    slidesToScroll: 1,
+    align: isMobile ? 'center' : 'start',
   });
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
-
   const [selectedIndex, setSelectedIndex] = useState(0);
-
+  
   useEffect(() => {
     if (!emblaApi) return;
     const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
@@ -249,56 +264,54 @@ const RealisationsCarousel = () => {
   return (
     <div className="relative container mx-auto mt-10">
       <div className="overflow-hidden" ref={emblaRef}>
-        {/*
-          Sur mobile (sans préfixe), on ne met pas de marge négative.
-          Sur desktop (lg:), on la remet pour que les 3 slides collent bien.
-        */}
         <div className="flex lg:-ml-4">
-          {realisationsData.map((item, index) => (
-            <div 
-              key={index}
-              className="flex-none w-[90%] lg:w-1/3 px-2 lg:pl-4"
-            >
-              <div className="relative w-full h-[474px] rounded-[18px] bg-[#fdfdfd] overflow-hidden group">
-                <Image 
-                  src={item.imageSrc} 
-                  alt={item.title} 
-                  fill 
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
-                <div className="absolute bottom-0 left-0 p-6 text-white w-full flex justify-between items-end">
-                  <div>
-                    <h3 className="font-bold text-[16.47px] leading-6 tracking-tight">{item.title}</h3>
-                    <p className="text-[11.06px] tracking-tight opacity-80">{item.subtitle}</p>
-                  </div>
-                  <div className="bg-white/5 backdrop-blur-sm rounded-[7px] w-[45px] h-[31px] flex items-center justify-center">
-                    <EyeIcon />
+          {posts.map((item, index) => (
+            <div key={item.id} className="flex-none w-[90%] lg:w-1/3 px-2 lg:pl-4">
+              <Link href={`/articles/${item.slug}`} className="block">
+                <div className="relative w-full h-[474px] rounded-[18px] bg-[#fdfdfd] overflow-hidden group">
+                  <Image 
+                    src={item.heroImage}
+                    alt={item.title}
+                    fill 
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                  <div className="absolute bottom-0 left-0 p-6 text-white w-full flex justify-between items-end">
+                    <div>
+                      <h3 className="font-bold text-[16.47px] leading-6 tracking-tight">{item.title}</h3>
+                      <p className="text-[11.06px] tracking-tight opacity-80 line-clamp-2">{item.description}</p>
+                    </div>
+                    <Link href="/articles" className="bg-white/5 backdrop-blur-sm rounded-[7px] w-[45px] h-[31px] flex items-center justify-center">
+                      <EyeIcon />
+                    </Link>
                   </div>
                 </div>
-              </div>
+              </Link>
             </div>
           ))}
         </div>
       </div>
       
-      {/* Boutons de navigation (cachés sur mobile par défaut) */}
-      <button onClick={scrollPrev} className="absolute top-1/2 left-4 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/20 backdrop-blur-sm flex items-center justify-center hover:bg-black/40 transition-colors  lg:flex">
+      <button onClick={scrollPrev} className="absolute top-1/2 left-4 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/20 backdrop-blur-sm items-center justify-center hover:bg-black/40 transition-colors hidden lg:flex">
         <ChevronLeftIcon />
       </button>
-      <button onClick={scrollNext} className="absolute top-1/2 right-4 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/20 backdrop-blur-sm flex items-center justify-center hover:bg-black/40 transition-colors  lg:flex">
+      <button onClick={scrollNext} className="absolute top-1/2 right-4 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/20 backdrop-blur-sm items-center justify-center hover:bg-black/40 transition-colors hidden lg:flex">
         <ChevronRightIcon />
       </button>
       
-      {/* Pagination (points) */}
       <div className="flex justify-center gap-2 mt-8">
-        {realisationsData.map((_, index) => (
+        {posts.map((_, index) => (
           <button 
             key={index}
             onClick={() => scrollTo(index)}
             className={`w-[5px] h-[5px] rounded-full transition-all duration-300 ${selectedIndex === index ? 'bg-black opacity-100' : 'bg-black opacity-30'}`}
           />
         ))}
+      </div>
+      <div className="text-center mt-12">
+        <Link href="/articles" className="inline-flex items-center gap-2 bg-black text-white text-sm font-bold py-3 px-6 rounded-md hover:bg-gray-800 transition-colors duration-300">
+          Voir tous les articles
+        </Link>
       </div>
     </div>
   );
