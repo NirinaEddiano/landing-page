@@ -5,7 +5,7 @@ import { compare } from 'bcrypt';
 
 const prisma = new PrismaClient();
 
-const authOptions = { // On garde cette constante, mais on ne l'exporte plus
+export const authOptions = { // On garde cette constante, mais on ne l'exporte plus
   providers: [
     CredentialsProvider({
       name: 'Credentials',
