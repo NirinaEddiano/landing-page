@@ -7,7 +7,7 @@ const LogoutIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" heig
 export function SignOutButton() {
   return (
     <button
-      onClick={() => signOut({ callbackUrl: '/' })}
+      onClick={() => signOut({ callbackUrl: '/login' })}
       className="flex items-center gap-2 rounded-md bg-red-50 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100"
     >
       <LogoutIcon />

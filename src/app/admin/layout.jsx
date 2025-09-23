@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { SignOutButton } from '@/components/authButtons'; // Nous allons créer ce composant
+import { UserCircleIcon } from '@heroicons/react/24/outline';
+import { SignOutButton } from '../../components/authButtons';// Nous allons créer ce composant
 
 const LogoutIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>;
 
@@ -14,9 +15,13 @@ export default function AdminLayout({ children }) {
                 MuntuLabs - Admin
               </Link>
             </div>
-            <div className="flex items-center">
-              <SignOutButton />
-            </div>
+            <div className="flex items-center gap-4">
+            <Link href="/admin/profile" className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
+              <UserCircleIcon className="h-6 w-6" />
+              Mon Profil
+            </Link>
+            <SignOutButton />
+          </div>
           </div>
         </div>
       </header>

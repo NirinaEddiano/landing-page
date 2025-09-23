@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect,useRef } from 'react';
 import Image from "next/image";
+import Link from "next/link";
 import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback } from 'react';
 import { PrismaClient } from '@prisma/client';

@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { useFormState } from 'react-dom';
-import TiptapEditor from '@/components/TiptapEditor';
-import { updatePost } from '@/app/actions/postActions'; // Nous allons créer cette nouvelle action
+import dynamic from 'next/dynamic';
+import { updatePost } from "../../../../../actions/postActions";
 import Image from 'next/image';
+
+const TiptapEditor = dynamic(() => import('../../../../../components/TiptapEditor'), { ssr: false });
 
 const initialState = { message: null };
 
@@ -42,10 +44,9 @@ export default function EditPostForm({ post }) {
         <TiptapEditor content={content} onChange={(newContent) => setContent(newContent)} />
       </div>
       
-      <div>
-        <button type="submit" className="inline-flex justify-center rounded-md border border-transparent bg-black py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-          Mettre à jour
-        </button>
+       <div className="flex items-center gap-4 pt-4 border-t">
+        <button type="submit" className="...">Mettre à jour</button>
+        <Link href="/admin/dashboard" className="text-sm font-medium text-gray-600 hover:text-gray-900">Annuler</Link>
       </div>
 
       {formState?.message && <p className="mt-2 text-sm text-red-600">{formState.message}</p>}

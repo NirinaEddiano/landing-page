@@ -68,16 +68,15 @@ export async function addPost(prevState, formData) {
   redirect('/admin/dashboard');
 }
 
-
 export async function updatePost(postId, prevState, formData) {
   const title = formData.get('title');
   const description = formData.get('description');
   const content = formData.get('content');
   const heroImageFile = formData.get('heroImage');
+  const slug = formData.get('slug'); // Récupérer le slug pour la révalidation
 
   let heroImageUrl;
 
-  // Si une nouvelle image a été fournie, on l'uploade
   if (heroImageFile && heroImageFile.size > 0) {
     const fileName = `${Date.now()}-${heroImageFile.name}`;
     const { error: uploadError } = await supabase.storage
@@ -93,14 +92,12 @@ export async function updatePost(postId, prevState, formData) {
   }
 
   try {
-    // On construit l'objet de mise à jour.
-    // L'URL de l'image n'est incluse que si une nouvelle image a été uploadée.
     const dataToUpdate = {
       title,
       description,
       content,
-      slug: `${slugify(title)}-${Date.now().toString().slice(-4)}`, // On regénère un slug au cas où le titre change
-      ...(heroImageUrl && { heroImage: heroImageUrl }), // Syntaxe pour ajouter conditionnellement une propriété
+      slug: `${slugify(title)}-${Date.now().toString().slice(-4)}`,
+      ...(heroImageUrl && { heroImage: heroImageUrl }),
     };
 
     await prisma.post.update({
@@ -114,24 +111,20 @@ export async function updatePost(postId, prevState, formData) {
 
   revalidatePath('/admin/dashboard');
   revalidatePath(`/articles`);
-  revalidatePath(`/articles/${formData.get('slug')}`); // Invalider l'ancienne page si le slug change
+  if (slug) {
+    revalidatePath(`/articles/${slug}`);
+  }
   redirect('/admin/dashboard');
 }
 
-// ... (gardez les fonctions addPost et updatePost)
-
-import { del } from '@vercel/blob'; // Si vous utilisez Vercel Blob, sinon, utilisez la méthode de Supabase
-// ...
 export async function deletePost(postId) {
   try {
-    // Optionnel mais recommandé : Supprimer l'image du stockage pour économiser de l'espace
     const postToDelete = await prisma.post.findUnique({ where: { id: postId } });
     if (postToDelete && postToDelete.heroImage) {
-      const fileName = postToDelete.heroImage.split('/').pop(); // Extrait le nom du fichier de l'URL
+      const fileName = postToDelete.heroImage.split('/').pop();
       await supabase.storage.from('blog-images').remove([fileName]);
     }
 
-    // Supprimer le post de la base de données
     await prisma.post.delete({
       where: { id: postId },
     });

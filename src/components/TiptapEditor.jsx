@@ -22,6 +22,7 @@ const TiptapEditor = ({ content, onChange }) => {
   const editor = useEditor({
     extensions: [StarterKit.configure()],
     content: content,
+    immediatelyRender: false, 
     editorProps: {
       attributes: {
         class: 'rounded-b-md border-x border-b border-gray-300 min-h-[300px] bg-white p-4 focus:outline-none',
