@@ -1,16 +1,16 @@
-// Ce fichier définit la structure de votre base de données
-
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider     = "postgresql"
+  // Utilise les variables créées par l'intégration Vercel + Supabase
+  url          = env("POSTGRES_PRISMA_URL")
+  directUrl    = env("POSTGRES_URL_NON_POOLING")
+  relationMode = "prisma"
 }
 
 generator client {
   provider = "prisma-client-js"
 }
 
-// Modèle pour l'utilisateur administrateur
+// Vos modèles Admin et Post ne changent pas
 model Admin {
   id        String   @id @default(cuid())
   username  String   @unique
@@ -19,7 +19,6 @@ model Admin {
   updatedAt DateTime @updatedAt
 }
 
-// Modèle pour vos articles de blog
 model Post {
   id          String   @id @default(cuid())
   slug        String   @unique
