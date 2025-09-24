@@ -12,7 +12,7 @@ const mada = Mada({
 });
 
 export const metadata = {
-  title: "MuntuLabs - Agence Digitale", // Mettez à jour le titre
+  title: "MuntuLabs - Agence Digitale",
   description: "Solutions digitales 360° : création de sites, apps mobiles, automatisations et closing.",
 };
 
