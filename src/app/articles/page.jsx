@@ -6,11 +6,28 @@ export const dynamic = 'force-dynamic';
 
 const prisma = new PrismaClient();
 
+async function getAndSerializePosts() {
+  try {
+    const posts = await prisma.post.findMany({
+      where: { published: true },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    // ==> LA CORRECTION EST ICI <==
+    // On mappe les résultats pour convertir les dates en chaînes ISO
+    return posts.map(post => ({
+      ...post,
+      createdAt: post.createdAt.toISOString(),
+      updatedAt: post.updatedAt.toISOString(),
+    }));
+  } catch (error) {
+    console.error("Failed to fetch articles:", error);
+    return [];
+  }
+}
+
 export default async function ArticlesPage() {
-  const posts = await prisma.post.findMany({
-    where: { published: true },
-    orderBy: { createdAt: 'desc' },
-  });
+  const posts = await getAndSerializePosts();
 
   return (
     <div className="bg-gray-50">
@@ -48,7 +65,7 @@ export default async function ArticlesPage() {
                   </Link>
                   <div className="max-w-xl">
                     <div className="mt-8 flex items-center gap-x-4 text-xs">
-                      <time dateTime={post.createdAt.toISOString()} className="text-gray-500">
+                      <time dateTime={post.createdAt} className="text-gray-500">
                         {new Date(post.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
                       </time>
                     </div>
