@@ -1035,7 +1035,7 @@ useEffect(() => {
       z-10: Placé sous le titre (z-20) mais au-dessus du reste.
       RETIRAIT de marginTop: '-10vh'. C'était la cause du problème d'espacement sur mobile.
     */}
-    <div ref={cardsContainerRef} className="relative z-30 container mx-auto" style={{ height: `${servicesData.length * 100}vh`, marginTop:`0px`}}>
+    <div ref={cardsContainerRef} className="relative z-30 container mx-auto" style={{ height: `${servicesData.length * 100}vh`}}>
         {servicesData.map((service, index) => (
             <div
                 key={index}
@@ -1048,7 +1048,7 @@ useEffect(() => {
                 */
                 style={{ top: `calc(200px )` }}
             >
-                <div className="bg-white p-4 sm:p-6  mt-[-85px] rounded-2xl shadow-2xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center max-w-6xl w-[90%] mx-auto">
+                <div className=" MAJEURE bg-white p-4 sm:p-6 sm:mt-[25px]  mt-[-85px] rounded-2xl shadow-2xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center max-w-6xl w-[90%] mx-auto">
                     {/* Le contenu de la carte (image, titre, features, bouton) va ici */}
                     <div className="w-full h-56 md:h-auto md:aspect-[4/3] relative rounded-xl overflow-hidden">
                         <Image
