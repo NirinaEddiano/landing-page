@@ -14,13 +14,19 @@ export const authOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        if (!credentials?.username || !credentials?.password) return null;
-        const admin = await prisma.admin.findUnique({ where: { username: credentials.username } });
-        if (!admin) return null;
-        const isValidPassword = await compare(credentials.password, admin.password);
-        if (!isValidPassword) return null;
-        return { id: admin.id, username: admin.username };
-      }
+  if (!credentials?.username || !credentials?.password) return null;
+  try {
+    const admin = await prisma.admin.findUnique({ where: { username: credentials.username } });
+    if (!admin) return null;
+    const isValidPassword = await compare(credentials.password, admin.password);
+    if (!isValidPassword) return null;
+    return { id: admin.id, username: admin.username };
+  } catch (error) {
+    console.error("Authorize error:", error);
+    return null;
+  }
+}
+
     })
   ],
   session: {
