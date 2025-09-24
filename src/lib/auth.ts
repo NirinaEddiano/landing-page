@@ -1,7 +1,7 @@
 // lib/auth.ts
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
-import { compare } from "bcryptjs";
+import { compare } from "bcryptjs"; // bcryptjs est une alternative pure JS à bcrypt
 
 const prisma = new PrismaClient();
 
@@ -14,43 +14,36 @@ export const authOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-  if (!credentials?.username || !credentials?.password) {
-    console.log("❌ Credentials manquants :", credentials);
-    return null;
-  }
+        if (!credentials?.username || !credentials?.password) {
+          console.log("Authorize: Missing credentials");
+          return null;
+        }
 
-  try {
-    console.log("🔍 Tentative de connexion avec :", credentials.username);
+        try {
+          const admin = await prisma.admin.findUnique({
+            where: { username: credentials.username }
+          });
 
-    const admin = await prisma.admin.findUnique({
-      where: { username: credentials.username },
-    });
+          if (!admin) {
+            console.log(`Authorize: User not found - ${credentials.username}`);
+            return null;
+          }
 
-    if (!admin) {
-      console.log("❌ Utilisateur introuvable :", credentials.username);
-      return null;
-    }
+          const isValidPassword = await compare(credentials.password, admin.password);
 
-    console.log("✅ Utilisateur trouvé :", admin.username);
+          if (!isValidPassword) {
+            console.log(`Authorize: Invalid password for user ${credentials.username}`);
+            return null;
+          }
+          
+          // Authentification réussie
+          return { id: admin.id, username: admin.username };
 
-    const isValidPassword = await compare(credentials.password, admin.password);
-
-    if (!isValidPassword) {
-      console.log("❌ Mot de passe invalide pour :", credentials.username);
-      return null;
-    }
-
-    console.log("✅ Mot de passe correct, connexion réussie :", admin.username);
-
-    return { id: admin.id, username: admin.username };
-
-  } catch (error) {
-    console.error("💥 Erreur pendant authorize :", error);
-    return null;
-  }
-}
-
-
+        } catch (error) {
+          console.error("Authorize Error:", error);
+          return null; // Retourne null en cas d'erreur de base de données
+        }
+      }
     })
   ],
   session: {
@@ -65,7 +58,7 @@ export const authOptions = {
       return token;
     },
     async session({ session, token }) {
-      if (token) {
+      if (token && session.user) {
         session.user.id = token.id;
         session.user.username = token.username;
       }
