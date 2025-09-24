@@ -1072,7 +1072,7 @@ useEffect(() => {
                   '200px' est une bonne valeur de départ pour la première carte sur tous les écrans.
                   Le décalage de 15px entre les cartes est accentué pour un meilleur effet.
                 */
-                style={{ top: `calc(${cardTopOffset}px` }}
+                style={{ top: `calc(${cardTopOffset}px)` }}
             >
                 <div className=" MAJEURE bg-white p-4 sm:p-6   lg:mt-[-180px] rounded-2xl shadow-2xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center max-w-6xl w-[90%] mx-auto">
                     {/* Le contenu de la carte (image, titre, features, bouton) va ici */}
