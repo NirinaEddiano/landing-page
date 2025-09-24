@@ -14,12 +14,8 @@ export default async function ArticlesPage() {
   });
 
   // Sépare le premier article des autres
-  const featuredPost = posts[0];<div className="mb-8">
-              <Link href="/" className="text-sm font-medium text-indigo-600 hover:underline">
-                ← Retour à l'accueil
-              </Link>
-            </div>
-  const otherPosts = posts.slice(1);
+  const featuredPost = posts.length > 0 ? posts[0] : null;
+  const otherPosts = posts.length > 1 ? posts.slice(1) : [];
 
   return (
     <div className="bg-white">
@@ -37,6 +33,12 @@ export default async function ArticlesPage() {
               Découvrez nos analyses, astuces et actualités pour booster votre activité digitale.
             </p>
           </div>
+
+           {posts.length === 0 && (
+            <div className="text-center mt-16 text-gray-500">
+              <p>Aucun article à afficher pour le moment.</p>
+            </div>
+          )}
           
           {/* Article mis en avant */}
           {featuredPost && (

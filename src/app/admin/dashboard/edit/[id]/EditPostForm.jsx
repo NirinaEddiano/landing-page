@@ -5,6 +5,7 @@ import { useFormState } from 'react-dom';
 import dynamic from 'next/dynamic';
 import { updatePost } from "../../../../../actions/postActions";
 import Image from 'next/image';
+import Link from 'next/link';
 
 const TiptapEditor = dynamic(() => import('../../../../../components/TiptapEditor'), { ssr: false });
 
