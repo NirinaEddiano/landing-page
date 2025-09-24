@@ -1254,7 +1254,7 @@ useEffect(() => {
               Découvrez nos analyses, astuces et actualités pour booster votre activité digitale.
             </p>
           </div>
-          <RealisationsCarouselClient />
+          <RealisationsCarouselClient posts={posts}/>
         </section>
 
         <ExpertsSection />
