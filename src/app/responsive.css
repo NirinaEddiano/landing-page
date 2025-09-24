@@ -44,6 +44,10 @@
     margin-top: -250px;
   }
 
+  .methodesone{
+     margin-top: -140px;
+  }
+
   /* Grille à l'intérieur de la carte */
   .service-grid-mobile {
     grid-template-columns: 1fr !important; /* On passe à une seule colonne */
