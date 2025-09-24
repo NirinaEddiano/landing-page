@@ -5,8 +5,15 @@
 html {
   scroll-behavior: smooth;
 }
+html, body {
+  overflow-x: clip;
+}
+
+/* L'ancienne règle est à supprimer complètement */
+/* 
 @media (max-width: 768px) {
-html,body {
-  @apply overflow-x-hidden;
-}
-}
+  html,body {
+    @apply overflow-x-hidden;
+  }
+} 
+*/

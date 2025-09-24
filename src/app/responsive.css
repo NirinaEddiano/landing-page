@@ -88,9 +88,7 @@
     font-size: 34.41px;
   }
 
-   .methodesone{
-    margin-top: 100px;
-  }
+
 
   .TestimonialCard{
     width:350px;
@@ -152,9 +150,6 @@
     padding:26px;
   }
 
-   .methodesone {
-    margin-top: 100px;
-  }
 
   .mon-titre1{
     width:260px;
@@ -268,10 +263,6 @@
   }
 }
 
-@media (max-width: 360px) {
-   .methodesone {
-    margin-top: 100px;
-  }
-}
+
 
  

@@ -1,12 +1,11 @@
-
+// Fichier: app/page.tsx
 "use client";
+
 import { useState, useEffect,useRef } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback } from 'react';
-
-
 
 const InstagramIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>;
 const LinkedinIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>;
@@ -216,23 +215,6 @@ const realisationsData = [
 ];
 
 
-const RealisationsCarousel = async () => {
-  const posts = await prisma.post.findMany({
-    where: { published: true },
-    orderBy: { createdAt: 'desc' },
-    take: 7,
-  });
-
-  if (!posts || posts.length === 0) {
-    return (
-      <div className="container mx-auto mt-10 text-center text-black/50">
-        Aucun article à afficher pour le moment.
-      </div>
-    );
-  }
-
-  return <RealisationsCarouselClient posts={posts} />;
-};
 
 // AJOUTEZ CE NOUVEAU COMPOSANT CLIENT DANS LE MÊME FICHIER
 const RealisationsCarouselClient = ({ posts }) => {
@@ -261,6 +243,13 @@ const RealisationsCarouselClient = ({ posts }) => {
   }, [emblaApi]);
 
   const scrollTo = useCallback((index) => emblaApi && emblaApi.scrollTo(index), [emblaApi]);
+  if (!posts || posts.length === 0) {
+    return (
+      <div className="container mx-auto mt-10 text-center text-black/50">
+        Aucun article à afficher pour le moment.
+      </div>
+    );
+  }
 
   return (
     <div className="relative container mx-auto mt-10">
@@ -734,7 +723,7 @@ const Footer = () => {
 };
 
 
-export default function HomeClient({ posts }) {
+export default function HomePageClient({ posts }) {
   
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -813,42 +802,55 @@ useEffect(() => {
 
   useEffect(() => {
     const handleServicesScroll = () => {
-      // On s'assure que les éléments sont bien présents sur la page
       if (!titleRef.current || !lastCardRef.current || !cardsContainerRef.current) {
         return;
       }
 
       const titleElement = titleRef.current;
-      const lastCardElement = lastCardRef.current;
-      const cardsContainerElement = cardsContainerRef.current;
+      const cardsContainerRect = cardsContainerRef.current.getBoundingClientRect();
+      const lastCardRect = lastCardRef.current.getBoundingClientRect();
 
-      const cardsContainerRect = cardsContainerElement.getBoundingClientRect();
+      // Position du haut du conteneur par rapport à la fenêtre
+      const containerTop = cardsContainerRect.top;
+
+      // Hauteur de la barre de navigation
+      const navHeight = 72;
+
+      // Calculer la position finale "collée" du bas de la dernière carte
+      const finalStickyTop = navHeight + (servicesData.length - 1) * 10;
+      const lastCardBottomFinalPos = finalStickyTop + lastCardRect.height;
       
-      // On calcule la position finale du bas de la dernière carte lorsqu'elle est "sticky"
-      const lastCardStickyTop = 200 + (servicesData.length - 1) * 20; // 260px pour 4 cartes
-      const lastCardHeight = lastCardElement.offsetHeight;
-      const lastCardBottomFinalPos = lastCardStickyTop + lastCardHeight;
-
-      // On vérifie si le bas du conteneur des cartes est passé au-dessus de la position finale de la dernière carte.
-      // Si c'est le cas, cela signifie que le conteneur remonte et pousse les cartes vers le haut.
       if (cardsContainerRect.bottom < lastCardBottomFinalPos) {
-        // On calcule de combien de pixels le conteneur a "dépassé"
         const pushUpDistance = lastCardBottomFinalPos - cardsContainerRect.bottom;
-        
-        // On applique ce décalage au titre via une transformation CSS.
-        // Le titre va se déplacer vers le haut en même temps que les cartes.
         titleElement.style.transform = `translateY(-${pushUpDistance}px)`;
-
       } else {
-        // Sinon, on remet le titre à sa position initiale.
         titleElement.style.transform = 'translateY(0px)';
       }
     };
 
     window.addEventListener('scroll', handleServicesScroll, { passive: true });
+    
+    // Pour la version mobile/tablette, nous utilisons IntersectionObserver
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) {
+          titleRef.current.style.position = 'static';
+        } else {
+          titleRef.current.style.position = 'sticky';
+        }
+      },
+      { rootMargin: "-72px 0px 0px 0px" } // se déclenche quand le conteneur quitte le haut de l'écran
+    );
+
+    if (cardsContainerRef.current) {
+      observer.observe(cardsContainerRef.current);
+    }
 
     return () => {
       window.removeEventListener('scroll', handleServicesScroll);
+      if (cardsContainerRef.current) {
+        observer.unobserve(cardsContainerRef.current);
+      }
     };
   }, []);
 
@@ -1018,62 +1020,73 @@ useEffect(() => {
 
 
          <section id="services" className="relative z-9 bg-white pt-4  ">
-            <div  ref={titleRef} className="services-sticky-title container mx-auto px-6 text-center py-8 sticky top-[72px] z-20 bg-white/80 backdrop-blur-sm">
-                <h2 className="mon-titre font-semibold text-[39.22px] leading-[40px] tracking-[-0.2px] text-black">
-                    Découvrez nos services.
-                </h2>
-                <p className="mt-4 font-normalmt-[-30px] re text-[13.95px] leading-[21px] tracking-[-0.5px] text-neutral-600 max-w-2xl mx-auto">
-                    Des solutions digitales élégantes et performantes, créées pour attirer,<br/>
-                    convaincre et faire grandir votre activité.
-                </p>
-            </div>
+            <div ref={titleRef} className="container mx-auto px-6 text-center py-8 sticky top-[50px] z-20 bg-white/80 backdrop-blur-sm">
+        <h2 className="mon-titre font-semibold text-3xl md:text-[39.22px] leading-tight md:leading-[40px] tracking-[-0.2px] text-black">
+            Découvrez nos services.
+        </h2>
+        <p className="mt-4 text-sm md:text-[13.95px] leading-relaxed md:leading-[21px] tracking-[-0.5px] text-neutral-600 max-w-2xl mx-auto">
+            Des solutions digitales élégantes et performantes, créées pour attirer,<br/>
+            convaincre et faire grandir votre activité.
+        </p>
+    </div>
 
-            <div ref={cardsContainerRef} className="relative z-0 container mx-auto" style={{ height: `${servicesData.length * 100}vh`, marginTop: '-10vh' }}>
-                {servicesData.map((service, index) => (
-                    <div
-                        key={index}
-                        ref={index === servicesData.length - 1 ? lastCardRef : null}
-                        className="sticky flex items-center justify-center w-full h-screen"
-                        style={{ top: `calc(120px + ${index * 10}px)` }} // Ajustez l'offset si besoin
-                    >
-                        <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-2xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center max-w-6xl w-full mx-4">
-                            <div className="w-full h-56 md:h-auto md:aspect-[4/3] relative rounded-xl overflow-hidden">
-                                <Image
-                                    src={service.imageSrc}
-                                    alt={service.title}
-                                    fill
-                                    className="object-cover"
-                                />
-                            </div>
-                            <div className="flex flex-col items-start text-left">
-                                <h3 className="text-xl sm:text-2xl font-semibold leading-tight text-black">
-                                    {service.title}
-                                </h3>
-                                <ul className="mt-6 space-y-3">
-                                    {service.features.map((feature, fIndex) => (
-                                        <li key={fIndex} className="flex items-start gap-3">
-                                            <span className="mt-1 flex-shrink-0 text-indigo-600"><CheckIcon /></span>
-                                            <span className="font-normal text-sm text-neutral-700">{feature}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                                <a
-                                    href="#contact"
-                                    className="mt-8 bg-black text-white font-medium text-sm rounded-lg flex items-center justify-center gap-2 py-3 px-6 transform hover:scale-105 transition-transform duration-300 ease-out"
-                                >
-                                    <PaperIcon />
-                                    <span>Devis Gratuit</span>
-                                </a>
-                            </div>
-                        </div>
+    {/* ======================= CONTENEUR DES CARTES ======================= */}
+    {/* 
+      z-10: Placé sous le titre (z-20) mais au-dessus du reste.
+      RETIRAIT de marginTop: '-10vh'. C'était la cause du problème d'espacement sur mobile.
+    */}
+    <div ref={cardsContainerRef} className="relative z-30 container mx-auto" style={{ height: `${servicesData.length * 100}vh`, marginTop:`0px`}}>
+        {servicesData.map((service, index) => (
+            <div
+                key={index}
+                ref={index === servicesData.length - 1 ? lastCardRef : null}
+                className="sticky flex items-center justify-center w-full h-screen"
+                /* 
+                  CORRECTION MAJEURE: Le 'top' est maintenant plus grand pour laisser de l'espace sous le titre.
+                  '200px' est une bonne valeur de départ pour la première carte sur tous les écrans.
+                  Le décalage de 15px entre les cartes est accentué pour un meilleur effet.
+                */
+                style={{ top: `calc(200px )` }}
+            >
+                <div className="bg-white p-4 sm:p-6  mt-[-85px] rounded-2xl shadow-2xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center max-w-6xl w-[90%] mx-auto">
+                    {/* Le contenu de la carte (image, titre, features, bouton) va ici */}
+                    <div className="w-full h-56 md:h-auto md:aspect-[4/3] relative rounded-xl overflow-hidden">
+                        <Image
+                            src={service.imageSrc}
+                            alt={service.title}
+                            fill
+                            className="object-cover"
+                        />
                     </div>
-                ))}
+                    <div className="flex flex-col items-start text-left">
+                        <h3 className="text-xl sm:text-2xl font-semibold leading-tight text-black">
+                            {service.title}
+                        </h3>
+                        <ul className="mt-6 space-y-3">
+                            {service.features.map((feature, fIndex) => (
+                                <li key={fIndex} className="flex items-start gap-3">
+                                    <span className="mt-1 flex-shrink-0 text-indigo-600"><CheckIcon /></span>
+                                    <span className="font-normal text-sm text-neutral-700">{feature}</span>
+                                </li>
+                            ))}
+                        </ul>
+                        <a
+                            href="#contact"
+                            className="mt-8 bg-black text-white font-medium text-sm rounded-lg flex items-center justify-center gap-2 py-3 px-6 transform hover:scale-105 transition-transform duration-300 ease-out"
+                        >
+                            <PaperIcon />
+                            <span>Devis Gratuit</span>
+                        </a>
+                    </div>
+                </div>
             </div>
+        ))}
+    </div>
       </section>
         
         {/* ... Répétez pt-20 pour les autres sections ... */}
         
-        <section id="methode" className="methodesone bg-white py-0 mt-[-10px] relative z-200">
+        <section id="methode" className="methodesone bg-white py-0 mt-[-10px]  relative z-200">
           <div className="container mx-auto px-6 text-center">
             <h2 className="mon-titre text-4xl font-semibold tracking-tight text-black">
               Notre méthode de travail.
@@ -1241,7 +1254,7 @@ useEffect(() => {
               Découvrez nos analyses, astuces et actualités pour booster votre activité digitale.
             </p>
           </div>
-          <RealisationsCarousel />
+          <RealisationsCarouselClient />
         </section>
 
         <ExpertsSection />
