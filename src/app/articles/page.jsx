@@ -16,7 +16,9 @@ export default async function ArticlesPage() {
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <div className="mb-8">
-              
+              <Link href="/" className="text-sm font-medium text-indigo-600 hover:underline">
+                ← Retour à l'accueil
+              </Link>
             </div>
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Nos Articles & Conseils</h2>
             <p className="mt-2 text-lg leading-8 text-gray-600">
