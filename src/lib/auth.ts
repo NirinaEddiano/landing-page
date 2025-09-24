@@ -14,18 +14,42 @@ export const authOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-  if (!credentials?.username || !credentials?.password) return null;
+  if (!credentials?.username || !credentials?.password) {
+    console.log("❌ Credentials manquants :", credentials);
+    return null;
+  }
+
   try {
-    const admin = await prisma.admin.findUnique({ where: { username: credentials.username } });
-    if (!admin) return null;
+    console.log("🔍 Tentative de connexion avec :", credentials.username);
+
+    const admin = await prisma.admin.findUnique({
+      where: { username: credentials.username },
+    });
+
+    if (!admin) {
+      console.log("❌ Utilisateur introuvable :", credentials.username);
+      return null;
+    }
+
+    console.log("✅ Utilisateur trouvé :", admin.username);
+
     const isValidPassword = await compare(credentials.password, admin.password);
-    if (!isValidPassword) return null;
+
+    if (!isValidPassword) {
+      console.log("❌ Mot de passe invalide pour :", credentials.username);
+      return null;
+    }
+
+    console.log("✅ Mot de passe correct, connexion réussie :", admin.username);
+
     return { id: admin.id, username: admin.username };
+
   } catch (error) {
-    console.error("Authorize error:", error);
+    console.error("💥 Erreur pendant authorize :", error);
     return null;
   }
 }
+
 
     })
   ],
