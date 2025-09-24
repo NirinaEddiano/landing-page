@@ -854,6 +854,32 @@ useEffect(() => {
     };
   }, []);
 
+  const [cardTopOffset, setCardTopOffset] = useState(200);
+const [isMobile, setIsMobile] = useState(false);
+
+// --- Hooks ---
+useEffect(() => {
+    // Détecte si on est sur un écran de moins de 768px
+    const checkIsMobile = () => setIsMobile(window.innerWidth < 768);
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    return () => window.removeEventListener('resize', checkIsMobile);
+}, []);
+
+useEffect(() => {
+    if (isMobile) {
+        // SUR MOBILE : les cartes commencent très haut (petite marge de 20px)
+        setCardTopOffset(20); 
+    } else {
+        // SUR ORDINATEUR : on calcule l'espace nécessaire sous le titre sticky
+        if (titleRef.current) {
+            const titleHeight = titleRef.current.offsetHeight;
+            const titleStickyTop = 50;
+            const margin = 24;
+            setCardTopOffset(titleStickyTop + titleHeight + margin);
+        }
+    }
+}, [isMobile, titleRef.current]); 
 
   return (
     <div className="bg-white text-black min-h-screen">
@@ -1020,7 +1046,7 @@ useEffect(() => {
 
 
          <section id="services" className="relative z-9 bg-white pt-4  ">
-            <div ref={titleRef} className="container mx-auto px-6 text-center py-8 sticky top-[50px] z-20 bg-white/80 backdrop-blur-sm">
+            <div ref={titleRef} className="container mx-auto px-6 text-center py-8 md:sticky md:top-[50px] z-20 bg-white/80 backdrop-blur-sm">
         <h2 className="mon-titre font-semibold text-3xl md:text-[39.22px] leading-tight md:leading-[40px] tracking-[-0.2px] text-black">
             Découvrez nos services.
         </h2>
@@ -1046,9 +1072,9 @@ useEffect(() => {
                   '200px' est une bonne valeur de départ pour la première carte sur tous les écrans.
                   Le décalage de 15px entre les cartes est accentué pour un meilleur effet.
                 */
-                style={{ top: `calc(200px )` }}
+                style={{ top: `calc(${cardTopOffset}px` }}
             >
-                <div className=" MAJEURE bg-white p-4 sm:p-6   mt-[-85px] rounded-2xl shadow-2xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center max-w-6xl w-[90%] mx-auto">
+                <div className=" MAJEURE bg-white p-4 sm:p-6   lg:mt-[-180px] rounded-2xl shadow-2xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center max-w-6xl w-[90%] mx-auto">
                     {/* Le contenu de la carte (image, titre, features, bouton) va ici */}
                     <div className="w-full h-56 md:h-auto md:aspect-[4/3] relative rounded-xl overflow-hidden">
                         <Image

@@ -41,7 +41,7 @@
   }
 
   .MAJEURE{
-    margin-top: -220px;
+    margin-top: -160px;
   }
 
   .methodesone{
@@ -95,7 +95,9 @@
   .mon-titre{
     font-size: 34.41px;
   }
-
+.methodesone{
+     margin-top: 60px;
+  }
 
 
   .TestimonialCard{
