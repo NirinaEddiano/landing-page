@@ -3,6 +3,8 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 const prisma = new PrismaClient();
 
 async function getPost(slug) {
@@ -112,6 +114,7 @@ export default async function ArticleDetailPage({ params }) {
                                     {p.title}
                                     </Link>
                                 </h3>
+
                             </div>
                         </article>
                     ))}
