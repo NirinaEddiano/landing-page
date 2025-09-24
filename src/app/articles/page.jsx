@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
+import FormattedDate from '../../components/FormattedDate';
 
 export const dynamic = 'force-dynamic';
 
@@ -66,7 +67,7 @@ export default async function ArticlesPage() {
                   <div className="max-w-xl">
                     <div className="mt-8 flex items-center gap-x-4 text-xs">
                       <time dateTime={post.createdAt} className="text-gray-500">
-                        {new Date(post.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                         <FormattedDate isoDate={post.createdAt} />
                       </time>
                     </div>
                     <div className="group relative">
@@ -78,7 +79,7 @@ export default async function ArticlesPage() {
                       </h3>
                       <p className="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">{post.description}</p>
                       <div className="text-center mt-12">
-                       <Link hhref={`/articles/${post.slug}`} className="inline-flex items-center gap-2 bg-black text-white text-sm font-bold py-3 px-6 rounded-md hover:bg-gray-800 transition-colors duration-300">
+                       <Link href={`/articles/${post.slug}`} className="inline-flex items-center gap-2 bg-black text-white text-sm font-bold py-3 px-6 rounded-md hover:bg-gray-800 transition-colors duration-300">
           Voir 
         </Link>
         </div>
