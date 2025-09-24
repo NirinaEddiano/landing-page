@@ -45,7 +45,7 @@ export default async function ArticleDetailPage({ params }) {
   return (
     <div className="bg-white">
       {/* SECTION HERO */}
-      <div className="relative h-[60vh] min-h-[400px] w-full">
+      <div className="relative h-[70vh] min-h-[500px] w-full flex flex-col justify-center items-center">
         <Image 
           src={post.heroImage}
           alt={post.title}
@@ -53,18 +53,31 @@ export default async function ArticleDetailPage({ params }) {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-        <div className="absolute bottom-0 left-0 w-full p-8 md:p-12 text-white">
+        {/* Le dégradé est renforcé pour améliorer la lisibilité */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/20" />
+        <div className="relative z-10 w-full text-center p-8 md:p-12 text-white">
             <div className="max-w-4xl mx-auto">
-                <Link href="/articles" className="text-sm font-medium text-white/80 hover:underline mb-4 inline-block">← Retour à tous les articles</Link>
-                <h1 className="mb-4 text-3xl font-extrabold leading-tight lg:text-5xl">{post.title}</h1>
-                <p className="text-lg text-white/90 max-w-2xl">{post.description}</p>
+                <Link href="/articles" className="text-sm font-medium text-white/90 hover:text-white mb-4 inline-block">← Retour à tous les articles</Link>
+                {/* Ajout d'une ombre portée (text-shadow) pour une meilleure visibilité */}
+                <h1 
+                  className="mb-4 text-4xl font-extrabold leading-tight lg:text-6xl"
+                  style={{ textShadow: '0 2px 15px rgba(0,0,0,0.5)' }}
+                >
+                    {post.title}
+                </h1>
+                <p 
+                  className="text-lg text-white/90 max-w-2xl mx-auto"
+                  style={{ textShadow: '0 1px 10px rgba(0,0,0,0.5)' }}
+                >
+                    {post.description}
+                </p>
             </div>
         </div>
       </div>
 
       {/* SECTION CONTENU */}
       <main className="py-16 lg:py-24 bg-white antialiased">
+        {/* La classe "prose" gère automatiquement le style du contenu généré par l'éditeur */}
         <article className="mx-auto w-full max-w-3xl px-6 lg:px-8 prose lg:prose-xl prose-indigo">
             <div
               dangerouslySetInnerHTML={{ __html: post.content }}
