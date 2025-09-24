@@ -60,7 +60,7 @@ export default async function ArticlesPage() {
                       <p className="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">{post.description}</p>
                       <div className="text-center mt-12">
                        <Link hhref={`/articles/${post.slug}`} className="inline-flex items-center gap-2 bg-black text-white text-sm font-bold py-3 px-6 rounded-md hover:bg-gray-800 transition-colors duration-300">
-          Voir l'article
+          Voir 
         </Link>
         </div>
                     </div>
