@@ -12,6 +12,8 @@ const initialState = {
 message: null,
 };
 
+const inputStyle = "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2";
+
 export default function NewPostPage() {
 const [content, setContent] = useState('');
 const [formState, formAction] = useFormState(addPost, initialState);
@@ -26,15 +28,15 @@ return (
       <form action={formAction} className="space-y-6">
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-gray-700">Titre de l'article</label>
-          <input type="text" name="title" id="title" required className="..." placeholder="Un titre accrocheur pour votre article" />
+          <input type="text" name="title" id="title" required className={inputStyle} placeholder="Un titre accrocheur pour votre article" />
         </div>
         <div>
           <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description courte (pour l'aperçu)</label>
-          <textarea name="description" id="description" rows={3} required className="..." placeholder="Un résumé concis de 1-2 phrases"></textarea>
+          <textarea name="description" id="description" rows={3} required className={inputStyle} placeholder="Un résumé concis de 1-2 phrases"></textarea>
         </div>
         <div>
           <label htmlFor="heroImage" className="block text-sm font-medium text-gray-700">Image principale</label>
-          <input type="file" name="heroImage" id="heroImage" required accept="image/*" className="..." />
+          <input type="file" name="heroImage" id="heroImage" required accept="image/*" className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"/>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Contenu de l'article</label>
